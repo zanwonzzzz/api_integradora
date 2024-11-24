@@ -54,6 +54,7 @@ class AuthController extends Controller
             'token' => $atoken
         ]);*/
     
+        //dd($token);
         return response()->json([
             'laravel_token' => $token,
             //'adonis_token' => $atoken,
@@ -109,7 +110,7 @@ class AuthController extends Controller
 
     public function register(Request $request)
     {
-        $credentials = $request->only('name', 'email', 'password');
+        //$credentials = $request->only('name', 'email', 'password');
         
         $validator = Validator::make($request->all(), [
             'name' => 'required',
@@ -134,8 +135,12 @@ class AuthController extends Controller
         Mail::to($user->email)->send(new Gmail($user));
 
         return response()->json([
-            'message' => '¡Usuario registrado exitosamente!',
-            'user' => $user
+           
+                'name' => $user->name,
+                'email' => $user->email,
+                'password' => $user->password
+
+            
         ], 201);
     }
 }
