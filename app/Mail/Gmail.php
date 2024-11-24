@@ -47,7 +47,7 @@ class Gmail extends Mailable
     {
         return new Content(
             view: 'activacion',
-            with: ['user' => $this->user],
+            with: ['user' => $this->user->name],
         );
     }
 
