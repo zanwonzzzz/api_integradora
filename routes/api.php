@@ -39,4 +39,4 @@ Route::get('/adafruit', [AdafruitController::class, 'obtener']);
 
 Route::post('register', [AuthController::class, 'register']);
 Route::post('login', [AuthController::class, 'login']);
-Route::get('control/{id}', [control::class, 'index'])->name('activacion')->middleware('signed');
+Route::get('control/{id}', [controlcontroller::class, 'index'])->name('activacion')->middleware('signed');
