@@ -16,14 +16,16 @@ class Gmail extends Mailable
     use Queueable, SerializesModels;
 
     protected User $user;
+    protected string $url;
     /**
      * Create a new message instance.
      *
      * @return void
      */
-    public function __construct(User $user)
+    public function __construct(User $user,string $url)
     {
         $this->user = $user;
+        $this->url = $url;
     }
 
     /**
@@ -47,7 +49,9 @@ class Gmail extends Mailable
     {
         return new Content(
             view: 'activacion',
-            with: ['user' => $this->user->name],
+            with: ['user' => $this->user->name,
+                   'url' => $this->url,
+                   ]
         );
     }
 

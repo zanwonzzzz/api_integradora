@@ -7,5 +7,7 @@
 </head>
 <body>
     Bienvenido {{$user}}
+    <a href="{{ $url }}">Activar Cuenta</a>
+
 </body>
 </html>

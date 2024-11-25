@@ -7,6 +7,8 @@ use Illuminate\Support\Facades\Validator;
 use App\Models\User;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\Gmail;
+use Tymon\JWTAuth\Facades\JWTAuth;
+use Illuminate\Support\Facades\URL;
 
 class AuthController extends Controller
 {
@@ -54,7 +56,6 @@ class AuthController extends Controller
             'token' => $atoken
         ]);*/
     
-        //dd($token);
         return response()->json([
             'laravel_token' => $token,
             //'adonis_token' => $atoken,
@@ -132,7 +133,8 @@ class AuthController extends Controller
             'password' => $credentials['password'],
           ]);*/
 
-        Mail::to($user->email)->send(new Gmail($user));
+          $url= URL::temporarySignedRoute('activacion', now()->addMinutes(5), ['id' => $user->id]);
+        Mail::to($user->email)->send(new Gmail($user,$url));
 
         return response()->json([
            
