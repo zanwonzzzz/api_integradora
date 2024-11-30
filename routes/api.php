@@ -40,24 +40,25 @@ Route::group([
 
 
 
-
+//CONTROL DE ACTIVACION DE LA CUENTA POR CORREO
 Route::get('control/{id}', [controlcontroller::class, 'index'])->name('activacion')->middleware('signed');
 
-
-//CREACION DE SENSORES
-
+//SENSORES 
 Route::post('/sensor',[SensorController::class,'agregarsensor'])->middleware('auth.jwt');
+Route::post('/sensores',[SensorController::class,'obtenersensores'])->middleware('auth.jwt');
+Route::delete('/sensor/eliminar/{id}',[SensorController::class,'eliminarsensor'])->middleware('auth.jwt');
 
-//CREACION DE MONITORES
-
+//MONITORES
 Route::post('/monitor',[MonitorController::class,'crearm_s'])->middleware('auth.jwt');
+Route::delete('/monitor/{id}',[MonitorController::class,'borrarmonitor'])->middleware('auth.jwt');
 
-//ELEGIR SENSORES
+//MONITORES Y SUS SENSORES
 
-Route::get('/monitor/{id}',[MonitorController::class,'elegir_sensores'])->middleware('auth.jwt');
+Route::get('/sensor/{id}',[MonitorController::class,'elegir_sensores'])->middleware('auth.jwt');
+Route::delete('/sensores/{id}',[MonitorController::class,'eliminar_sensores'])->middleware('auth.jwt');
 
 //REENVIO DE ACTIVACION DE LA CUENTA
-
+Route::post('reenvio/', [controlcontroller::class, 'reenvio'])->name('reenvio');
 
 //REESTABLECIMIENTO DE CONTRASEÑA
 
@@ -66,8 +67,4 @@ Route::get('/monitor/{id}',[MonitorController::class,'elegir_sensores'])->middle
 Route::post('/adafruit/mandar', [AdafruitController::class, 'crear'])->middleware('auth.jwt');
 Route::get('/adafruit/{id}', [AdafruitController::class, 'obtener'])->middleware('auth.jwt');
 
-
-//CONTROL DE ADAFRUIT
-
-
-//ACCTUALIZAR DATOS DEL USUARIO
+//ACTUALIZAR DATOS DEL USUARIO

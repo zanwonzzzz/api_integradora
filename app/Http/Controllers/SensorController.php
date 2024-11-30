@@ -14,4 +14,17 @@ class SensorController extends Controller
         $sensor->save();
 
     }
+
+    public function obtenersensores(){
+        $sensor = Sensor::all();
+        return response()->json([
+            'msg' => 'Sensores Disponibles',
+            'data' => $sensor
+        ], 200);
+    }
+
+    public function eliminarsensor(int $id=0){
+        $sensor = Sensor::find($id);
+        $sensor->delete();
+    }
 }

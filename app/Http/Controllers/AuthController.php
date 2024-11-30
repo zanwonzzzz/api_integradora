@@ -35,6 +35,18 @@ class AuthController extends Controller
         if (!$token = auth()->attempt($credentials)) {
             return response()->json(['error' => 'Unauthorized'], 401);
         }
+
+        $user = auth()->user();
+        
+
+        if ($user->cuenta_activa == 0 ) {
+            return response()->json(['error' => 'Cuenta no activada.'], 403);
+        } else {
+            return response()->json([
+                'laravel_token' => $token,
+               // 'oswi_token' => $atoken,
+            ]);
+        }
     
        /* $response = Http::withHeaders([])->post('http://192.168.253.29:9090/api/auth/login', [
             'name' => $credentials['name'],
@@ -49,17 +61,17 @@ class AuthController extends Controller
             return response()->json(['error' => 'Token no recibido'], 500);
         }*/
     
-        $id = auth()->user()->id; 
+       // $id = auth()->user()->id; 
     
         DB::table('tabla_tokens')->updateOrInsert([
-            'user_id' => $id,
+            'user_id' => $user->id,
             'token' => $token
         ]);
     
-        return response()->json([
+       /* return response()->json([
             'laravel_token' => $token,
             //'adonis_token' => $atoken,
-        ]);
+        ]);*/
     }
     /**
      * Get the authenticated User.
@@ -133,7 +145,7 @@ class AuthController extends Controller
             'password' => $credentials['password'],
           ]);*/
 
-          $url= URL::temporarySignedRoute('activacion', now()->addMinutes(5), ['id' => $user->id]);
+          $url= URL::temporarySignedRoute('activacion', now()->addMinutes(1), ['id' => $user->id]);
         Mail::to($user->email)->send(new Gmail($user,$url));
 
         return response()->json([

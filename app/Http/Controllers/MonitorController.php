@@ -30,14 +30,13 @@ class MonitorController extends Controller
                 
                 $monitor->delete();
                     return response()->json([
-                        "msg" => "Especialidad encontrada y eliminada",
+                        "msg" => "Monitor eliminado",
                         "data" => [
-                            "especialidad_en_laravel" => $especialidad,
-                            "respuesta_api" => $results,
+                            "monitor" => $monitor
                         ]
                     ], 200);
             } else {
-                return response()->json(['msg' => 'Especialidad no encontrada'], 404);
+                return response()->json(['msg' => 'Monitor no encontrado'], 404);
             }
         } else {
            
