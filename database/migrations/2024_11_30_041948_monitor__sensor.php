@@ -13,7 +13,7 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('monitores', function (Blueprint $table) {
+        Schema::create('monitores_sensores', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('monitor_id');
             $table->unsignedBigInteger('sensor_id');
