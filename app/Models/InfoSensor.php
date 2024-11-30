@@ -7,18 +7,13 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 
-class Token extends Model
+class InfoSensor extends Model
 {
     use HasFactory, SoftDeletes;
 
-    protected $table = 'tabla_tokens';
+    protected $table = "infosensores";
 
-    protected $fillable = [
-        'user_id',
-        'token',
-    ];
-
-    public function user(){
-        return $this->belongsTo(User::class);
+    public function monitor_sensor(){
+        return $this->belongsTo(MonitorSensor::class);
     }
 }

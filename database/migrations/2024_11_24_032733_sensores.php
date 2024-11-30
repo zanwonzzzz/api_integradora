@@ -16,6 +16,7 @@ return new class extends Migration
         Schema::create('sensores', function (Blueprint $table) {
             $table->id();
             $table->string('Nombre_Sensor');
+            $table->softDeletes();
             $table->timestamps();
         });
     }

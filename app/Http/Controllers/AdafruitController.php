@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 use App\Models\Sensor;
 use Illuminate\Support\Collection;
+use App\Models\InfoSensor;
 class AdafruitController extends Controller
 {
     public function obtener(int $id =0){
@@ -37,12 +38,15 @@ class AdafruitController extends Controller
         }
     }
 
-    public function crear(request $request){
-        $led = new Sensor();
-        $led->name_sensor = $request->name;
-        $led->value = $request->value;
-        $led->save();
 
+    //mandar datos de android a la api y despues a adafruit
+
+    public function crear(request $request){
+        $valor = new InfoSensor();
+        $valor->monitor_sensor = $request->monitor_sensor;
+        $valor->valor = $request->valor;
+        $valor->save();
+/* 
         $key = config('services.adafruit.key');
 
         $response = Http::WithHeaders([
@@ -53,6 +57,8 @@ class AdafruitController extends Controller
 
             if ($response->successful()) {
                 return response()->json(['message' => 'datos enviados correctamente']);
-            } 
+            }  */
     }
+
+    //silenciar bocina
 }

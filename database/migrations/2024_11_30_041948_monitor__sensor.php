@@ -17,6 +17,7 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('monitor_id');
             $table->unsignedBigInteger('sensor_id');
+            $table->softDeletes();
             $table->timestamps();
 
             $table->foreign('monitor_id')->references('id')->on('monitores')->onDelete('cascade');

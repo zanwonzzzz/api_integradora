@@ -65,3 +65,9 @@ Route::get('/monitor/{id}',[MonitorController::class,'elegir_sensores'])->middle
 //CONTROL DE ADAFRUIT
 Route::post('/adafruit/mandar', [AdafruitController::class, 'crear'])->middleware('auth.jwt');
 Route::get('/adafruit/{id}', [AdafruitController::class, 'obtener'])->middleware('auth.jwt');
+
+
+//CONTROL DE ADAFRUIT
+
+
+//ACCTUALIZAR DATOS DEL USUARIO

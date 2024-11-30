@@ -8,6 +8,8 @@ use App\Models\Sensor;
 
 class MonitorController extends Controller
 {
+
+    //crear monitor
     public function crearm_s(request $request){
         $id = auth()->user()->id;
 
@@ -18,18 +20,54 @@ class MonitorController extends Controller
 
     }
 
-    public function elegir_sensores(int $id=0){
+    //borrar monitor
+    public function borrarmonitor(int $id=0){
+        if ($id != 0) {
+          
+            $monitor = Monitor::find($id);
+            
+            if ($monitor) {
+                
+                $monitor->delete();
+                    return response()->json([
+                        "msg" => "Especialidad encontrada y eliminada",
+                        "data" => [
+                            "especialidad_en_laravel" => $especialidad,
+                            "respuesta_api" => $results,
+                        ]
+                    ], 200);
+            } else {
+                return response()->json(['msg' => 'Especialidad no encontrada'], 404);
+            }
+        } else {
+           
+            $monitoresBorrados = Monitor::onlyTrashed()->get();
+            return response()->json([
+                'msg' => 'Monitores eliminadas',
+                'data' => $monitoresBorrados
+            ], 200);
+        }
+    }
 
-        $monitor = auth()->user()->monitor()->first();
+    //elegir sensores
+    public function elegir_sensores(int $idmonitor=0,int $idsensor=0){
+        
+    
+
+        $monitor = auth()->user()->monitor()->find($idmonitor);
         $sensor_id = Sensor::find($id);
-        //if($sensor_id > 0){
-            $monitor->sensores()->attach($sensor_id);
-       /*  }
-        else {
-            return response()->json(['message' => 'sensor no encontrado']);
-        } */
-       
+        
+        $monitor->sensores()->attach($sensor_id);
+      
 
     }
 
+    //borrar sensores q eligio
+
+    public function eliminar_sensores(int $idmonitor=0,int $idsensor=0){
+        $monitor = auth()->user()->monitor()->find($idmonitor);
+        $sensor_id = Sensor::find($id);
+        
+        $monitor->sensores()->detach($sensor_id);
+    }
 }
