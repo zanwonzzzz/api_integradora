@@ -51,7 +51,7 @@ class AuthController extends Controller
     
         $id = auth()->user()->id; 
     
-        DB::table('tabla_tokens')->insert([
+        DB::table('tabla_tokens')->updateOrInsert([
             'user_id' => $id,
             'token' => $token
         ]);
