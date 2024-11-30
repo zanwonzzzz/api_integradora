@@ -5,16 +5,16 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Sensor extends Model
+class Monitor extends Model
 {
     use HasFactory;
-    protected $table = 'sensores';
+
+    protected $table = 'monitores';
 
     public function user(){
         return $this->belongsTo(User::class);
     }
-
-   public function monitores (){
-      return $this->belongsToMany(Monitor::class, 'monitores_sensores','monitor_id', 'sensor_id');
-   }
+    public function sensores(){
+        return $this->belongsToMany(Sensor::class, 'monitores_sensores', 'monitor_id', 'sensor_id');
+    }
 }
