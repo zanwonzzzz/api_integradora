@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Mail;
 use App\Mail\Gmail;
 use Tymon\JWTAuth\Facades\JWTAuth;
 use Illuminate\Support\Facades\URL;
-
+use Illuminate\Support\Facades\DB;
 class AuthController extends Controller
 {
     
@@ -47,14 +47,14 @@ class AuthController extends Controller
     
         if (!$atoken) {
             return response()->json(['error' => 'Token no recibido'], 500);
-        }
+        }*/
     
         $id = auth()->user()->id; 
     
         DB::table('tabla_tokens')->insert([
             'user_id' => $id,
-            'token' => $atoken
-        ]);*/
+            'token' => $token
+        ]);
     
         return response()->json([
             'laravel_token' => $token,
@@ -111,11 +111,11 @@ class AuthController extends Controller
 
     public function register(Request $request)
     {
-        //$credentials = $request->only('name', 'email', 'password');
+        $credentials = $request->only('email','name','password');
         
         $validator = Validator::make($request->all(), [
-            'name' => 'required',
             'email' => 'required|string|email|max:100|unique:users',
+            'name' => 'required',
             'password' => 'required|string|min:6',
         ]);
         if($validator->fails()){
@@ -137,9 +137,9 @@ class AuthController extends Controller
         Mail::to($user->email)->send(new Gmail($user,$url));
 
         return response()->json([
-           
-                'name' => $user->name,
+            
                 'email' => $user->email,
+                'name' => $user->name,
                 'password' => $user->password
 
             
