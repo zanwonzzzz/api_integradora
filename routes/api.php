@@ -57,7 +57,7 @@ Route::delete('/monitor/{id}',[MonitorController::class,'borrarmonitor'])->middl
 
 Route::get('/sensor/{idmonitor}/{id}',[MonitorController::class,'elegir_sensores'])->middleware('auth.jwt');
 Route::delete('/sensores/{idmonitor}/{id}',[MonitorController::class,'eliminar_sensores'])->middleware('auth.jwt');
-Route::get('/sensores',[MonitorController::class,'SensoresMonitor'])->middleware('auth.jwt');
+Route::get('/sensores/{id}',[MonitorController::class,'SensoresMonitor'])->middleware('auth.jwt');
 
 //REENVIO DE ACTIVACION DE LA CUENTA
 Route::post('reenvio/', [controlcontroller::class, 'reenvio'])->name('reenvio');
@@ -69,8 +69,9 @@ Route::post('reenvio/', [controlcontroller::class, 'reenvio'])->name('reenvio');
 Route::post('/adafruit/mandar', [AdafruitController::class, 'crear'])->middleware('auth.jwt');
 Route::get('/adafruit/{id}', [AdafruitController::class, 'obtener'])->middleware('auth.jwt');
 
+//DATOS EN VIVO LAST DATA
+Route::get('/envivo/{id}', [AdafruitController::class, 'Envivo'])->middleware('auth.jwt');
+
 //ACTUALIZAR DATOS DEL USUARIO
 
 
-
-Route::get('/ola', [MonitorController::class, 'ola']);

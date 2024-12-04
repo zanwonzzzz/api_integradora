@@ -87,28 +87,31 @@ class MonitorController extends Controller
     }
 
     //obtener sensores de un monitor
-    public function SensoresMonitor(){
+    public function SensoresMonitor(int $idmonitor=0){
        
+        
         $id = auth()->user()->id;
-        $monitorsensor = MonitorSensor::where('monitor_id', $id)->pluck('sensor_id');
+        $monitor = Monitor::find($idmonitor);
+        $monitorsensor = MonitorSensor::where('monitor_id', $monitor->id)->pluck('sensor_id');
         $sensores = Sensor::whereIn('id', $monitorsensor)->get();
             
+        
+        
         
         
 
         return response()->json([
             'msg' => 'Sensores por monitor',
             'data' => [
-                'monitor' => $monitorsensor->id,
-                'sensores' => $sensores
+                'monitor' => [
+                    'id' => $monitor->id,
+                    'sensores' => $sensores
+                ],
+                
             ]
         ], 200);
         
     }
 
-    public function ola(){
-        return response()->json([
-            'msg' => 'Ola'
-        ], 200);
-    }
+    
 }
