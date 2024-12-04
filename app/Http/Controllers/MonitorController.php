@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Monitor;
 use App\Models\Sensor;
+use App\Models\MonitorSensor;
 
 class MonitorController extends Controller
 {
@@ -18,6 +19,21 @@ class MonitorController extends Controller
         $monitor->Nombre_Monitor = $request->nombre;
         $monitor->save();
 
+        return response()->json([
+            'msg' => 'Monitor creado',
+            'data' => $monitor
+        ], 200);
+
+    }
+
+    //monitores que tiene un usuario
+    public function monitor_usuario(){
+        $id = auth()->user()->id;
+        $monitores = Monitor::where('user_id', $id)->get();
+        return response()->json([
+            'msg' => 'Monitores',
+            'data' => $monitores
+        ], 200);
     }
 
     //borrar monitor
@@ -54,19 +70,45 @@ class MonitorController extends Controller
     
 
         $monitor = auth()->user()->monitor()->find($idmonitor);
-        $sensor_id = Sensor::find($id);
+        $sensor_id = Sensor::find($idsensor);
         
         $monitor->sensores()->attach($sensor_id);
       
 
     }
 
+    
     //borrar sensores q eligio
-
-    public function eliminar_sensores(int $idmonitor=0,int $idsensor=0){
+     public function eliminar_sensores(int $idmonitor=0,int $idsensor=0){
         $monitor = auth()->user()->monitor()->find($idmonitor);
-        $sensor_id = Sensor::find($id);
+        $sensor_id = Sensor::find($idsensor);
         
         $monitor->sensores()->detach($sensor_id);
+    }
+
+    //obtener sensores de un monitor
+    public function SensoresMonitor(){
+       
+        $id = auth()->user()->id;
+        $monitorsensor = MonitorSensor::where('monitor_id', $id)->pluck('sensor_id');
+        $sensores = Sensor::whereIn('id', $monitorsensor)->get();
+            
+        
+        
+
+        return response()->json([
+            'msg' => 'Sensores por monitor',
+            'data' => [
+                'monitor' => $monitorsensor->id,
+                'sensores' => $sensores
+            ]
+        ], 200);
+        
+    }
+
+    public function ola(){
+        return response()->json([
+            'msg' => 'Ola'
+        ], 200);
     }
 }

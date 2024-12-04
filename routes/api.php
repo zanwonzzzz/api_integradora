@@ -45,17 +45,19 @@ Route::get('control/{id}', [controlcontroller::class, 'index'])->name('activacio
 
 //SENSORES 
 Route::post('/sensor',[SensorController::class,'agregarsensor'])->middleware('auth.jwt');
-Route::post('/sensores',[SensorController::class,'obtenersensores'])->middleware('auth.jwt');
+Route::get('/sensores',[SensorController::class,'obtenersensores'])->middleware('auth.jwt');
 Route::delete('/sensor/eliminar/{id}',[SensorController::class,'eliminarsensor'])->middleware('auth.jwt');
 
 //MONITORES
 Route::post('/monitor',[MonitorController::class,'crearm_s'])->middleware('auth.jwt');
+Route::get('/monitores',[MonitorController::class,'monitor_usuario'])->middleware('auth.jwt');
 Route::delete('/monitor/{id}',[MonitorController::class,'borrarmonitor'])->middleware('auth.jwt');
 
 //MONITORES Y SUS SENSORES
 
-Route::get('/sensor/{id}',[MonitorController::class,'elegir_sensores'])->middleware('auth.jwt');
-Route::delete('/sensores/{id}',[MonitorController::class,'eliminar_sensores'])->middleware('auth.jwt');
+Route::get('/sensor/{idmonitor}/{id}',[MonitorController::class,'elegir_sensores'])->middleware('auth.jwt');
+Route::delete('/sensores/{idmonitor}/{id}',[MonitorController::class,'eliminar_sensores'])->middleware('auth.jwt');
+Route::get('/sensores',[MonitorController::class,'SensoresMonitor'])->middleware('auth.jwt');
 
 //REENVIO DE ACTIVACION DE LA CUENTA
 Route::post('reenvio/', [controlcontroller::class, 'reenvio'])->name('reenvio');
@@ -68,3 +70,7 @@ Route::post('/adafruit/mandar', [AdafruitController::class, 'crear'])->middlewar
 Route::get('/adafruit/{id}', [AdafruitController::class, 'obtener'])->middleware('auth.jwt');
 
 //ACTUALIZAR DATOS DEL USUARIO
+
+
+
+Route::get('/ola', [MonitorController::class, 'ola']);
