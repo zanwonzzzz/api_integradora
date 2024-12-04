@@ -10,6 +10,7 @@ use App\Models\InfoSensor;
 use App\Controllers\MonitorController;
 use App\Models\Monitor;
 use App\Models\MonitorSensor;
+use Illuminate\Support\Facades\Validator;
 class AdafruitController extends Controller
 {
     public function obtener(int $id =0){
@@ -117,5 +118,62 @@ class AdafruitController extends Controller
       return response()->json($resultado);
 
 
+    }
+
+    public function ApagarBocina(request $request){
+
+        $validator = Validator::make($request->all(), [
+            'value' => 'required|numeric',
+        ]);
+        if($validator->fails()){
+            return response()->json($validator->errors(),400);
+        }
+
+
+        $value = $request->value;
+        $key = config('services.adafruit.key');
+        //dd($key);
+        //dd($valor);
+
+        $response = Http::WithHeaders([
+            'X-AIO-Key' => $key])->post('https://io.adafruit.com/api/v2/TomasilloV/feeds/sensores.bocina/data', [
+                'value' => $value
+                
+            ]);
+
+            //dd($response);
+
+            if ($response->successful()) {
+                return response()->json(['message' => 'datos enviados correctamente']);
+            } else {
+               
+                return response()->json(['message' => 'Error al enviar los datos'], 500);
+            }
+    }
+
+
+    //MANDAR LOS SENSORES DE UN MONITOR A ADAFRUIT
+    public function AdafruitSensor(int $idmonitor=0){
+
+        $adafruitsensores = [];
+       $key = config('services.adafruit.key');
+         
+        $id = auth()->user()->id;
+        $monitor = Monitor::find($idmonitor);
+        $monitorsensor = MonitorSensor::where('monitor_id', $monitor->id)->pluck('sensor_id');
+        $sensores = Sensor::whereIn('id', $monitorsensor)->pluck('id');
+            
+        $adafruitsensores = $sensores->toArray();
+        $resultado = [];
+        
+       
+        
+
+           $response = Http::withHeaders([
+            'X-AIO-Key' => $key,  
+        ])->post("https://io.adafruit.com/api/v2/TomasilloV/feeds/sensores.bocina/data", [
+            'value' => implode(',', $adafruitsensores)
+        ]);
+        
     }
 }

@@ -17,9 +17,12 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->string('email')->unique();
-            $table->boolean('cuenta_activa')->default(false);
-            $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
+            $table->boolean('cuenta_activa')->default(false);
+            $table->text('fotoperfil')->nullable();
+            $table->string('mime_type')->nullable();
+            $table->boolean('monitor')->default(false)->nullable();
+            $table->timestamp('email_verified_at')->nullable();
             $table->rememberToken();
             $table->softDeletes();
             $table->timestamps();

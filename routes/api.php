@@ -9,6 +9,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\controlcontroller;
 use App\Http\Controllers\MonitorController;
 use App\Http\Controllers\SensorController;
+use App\Http\Controllers\ImagenController;
 
 /*
 |--------------------------------------------------------------------------
@@ -75,3 +76,12 @@ Route::get('/envivo/{id}', [AdafruitController::class, 'Envivo'])->middleware('a
 //ACTUALIZAR DATOS DEL USUARIO
 
 
+//APAGAR BOCINA
+Route::post('/apagar/bocina/', [AdafruitController::class, 'ApagarBocina'])->middleware('auth.jwt');
+
+//MANDAR LOS SENSORES DE UN MONITOR A ADAFRUIT
+Route::get('/adafruit/mandar/sensores/{id}', [AdafruitController::class, 'AdafruitSensor'])->middleware('auth.jwt');
+
+//FOTO DE PERFIL DEL USUARIO
+Route::post('/foto', [ImagenController::class, 'SubirFoto'])->middleware('auth.jwt');
+Route::get('/foto', [ImagenController::class, 'MostrarFoto'])->middleware('auth.jwt');
