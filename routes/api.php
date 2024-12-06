@@ -91,10 +91,13 @@ Route::get('/foto', [ImagenController::class, 'MostrarFoto'])->middleware('auth.
 
 
 //PROMEDIO
-Route::get('/promedio', [AdafruitController::class, 'Promedio'])->middleware('auth.jwt');
+Route::get('/promedio/{idsensor}', [AdafruitController::class, 'Promedio'])->middleware('auth.jwt');
 
 //SUBIR FOTO DEL BEBE
 Route::post('/fotobebe', [ImagenController::class, 'Fotobebe'])->middleware('auth.jwt'); 
 
 //RECUPERAR FOTO DEL ESTADO DEL BEBE
 Route::get('/fotobebe/{idestado}', [ImagenController::class, 'RecuperarEstadoBebe'])->middleware('auth.jwt'); 
+
+//GUARDAR DATOS DE ADAFRUIT EN LA BASE DE DATOS
+Route::get('/adafruit/guardar/datos', [AdafruitController::class, 'CronJobParaPromedio'])->middleware('auth.jwt');

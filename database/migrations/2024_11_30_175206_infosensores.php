@@ -15,12 +15,13 @@ return new class extends Migration
     {
         Schema::create('infosensores', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('monitor_sensor');
+            $table->unsignedBigInteger('sensor_id');
             $table->text('valor');
             $table->softDeletes();
             $table->timestamps();
 
-            $table->foreign('monitor_sensor')->references('id')->on('monitores_sensores')->onDelete('cascade');
+            $table->foreign('sensor_id')->references('id')->on('sensores')->onDelete('cascade');
+
 
         });
     }

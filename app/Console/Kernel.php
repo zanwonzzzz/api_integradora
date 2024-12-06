@@ -13,9 +13,14 @@ class Kernel extends ConsoleKernel
      * @param  \Illuminate\Console\Scheduling\Schedule  $schedule
      * @return void
      */
+
+     protected $commands = [
+        Commands\ConsumirAdafruit::class
+     ];
+
     protected function schedule(Schedule $schedule)
     {
-        // $schedule->command('inspire')->hourly();
+        $schedule->command('Consumir:Adafruit')->everyMinute();
     }
 
     /**

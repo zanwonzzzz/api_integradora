@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\Validator;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Log;
 use App\Models\Estado;
+use Illuminate\Support\Facades\DB;
 class AdafruitController extends Controller
 {
     public function obtener(int $id =0){
@@ -108,6 +109,8 @@ class AdafruitController extends Controller
 
         if($response->successful()){
             $data = $response->json();
+            
+
             $resultado[] = [
                 'sensor' => $sensor->Nombre_Sensor,
                 'data' => $data,
@@ -175,8 +178,11 @@ class AdafruitController extends Controller
      }
     public function ApagarBocina(request $request){
 
+        /*
+         {'value': 'apagar'}
+        */
         $validator = Validator::make($request->all(), [
-            'value' => 'required|numeric',
+            'value' => 'required|string',
         ]);
         if($validator->fails()){
             return response()->json($validator->errors(),400);
@@ -231,9 +237,9 @@ class AdafruitController extends Controller
     }
 
 
-    public function Promedio(){
+    public function Promedio(int $idsensor=0){
         $key = config('services.adafruit.key');
-        //$sensor  = Sensor::find($id);
+        
         
         $fechaactual = Carbon::now();
         $cada5dias = [];
@@ -244,26 +250,30 @@ class AdafruitController extends Controller
         $dias = 5;
         for($i=0; $i < $dias; $i++){
 
+            $sensor  = Sensor::find($idsensor);
+
             $contador = $i * 1;
             $fechalimite = Carbon::now()->subDays($contador)->startOfDay()->utc();
             $fechafinal =Carbon::now()->subDays($contador)->endOfDay()->utc();
 
             $response = Http::withHeaders([
                 'X-AIO-Key' => $key,  
-            ])->get("https://io.adafruit.com/api/v2/TomasilloV/feeds/sensores.gas/data?start_time={$fechalimite}&end_time={$fechafinal}");
+            ])->get("https://io.adafruit.com/api/v2/TomasilloV/feeds/sensores.{$sensor->Nombre_Sensor}/data?start_time={$fechalimite}&end_time={$fechafinal}");
              
             $data = $response->json(); 
             $mismosdias= [];
-             
+            //dd($sensor->Nombre_Sensor);
+            Log::info('Sensor procesado:', ['id' => $idsensor, 'nombre' => $sensor->Nombre_Sensor]);
+
     
             foreach($data as $res){
                 $fecha = Carbon::parse($res["created_at"])->utc();
-                \Log::info('Fecha procesada:', [
+                /* \Log::info('Fecha procesada:', [
                     'original' => $res['created_at'],
                     'carbon' => $fecha,
                     'esMismoDia' => $fecha->isSameDay($fechalimite),
                     'fechalimite' => $fechalimite
-                ]);
+                ]); */
               // dd($fecha);
     
                 if($fecha->isSameDay($fechalimite)){
@@ -282,7 +292,7 @@ class AdafruitController extends Controller
                 $promedio = array_sum($valores) / count($valores);
 
                 //ESTOS DATOS POR MIENTRAS PQ SON DEL DE GAS
-                if($promedio >= 800){
+                /* if($promedio >= 800){
                     $estado = "triste";
                     $idestado = 3;
                 }
@@ -293,7 +303,7 @@ class AdafruitController extends Controller
                 else {
                     $estado = "feliz";
                     $idestado = 1;
-                }
+                } */
             } else {
                 $promedio = 0;
             }
@@ -302,8 +312,8 @@ class AdafruitController extends Controller
              $resultados[] = [
                 "fecha" => $fechalimite->toDateString(),
                 "promedio" => $promedio,
-                "estado" => $estado,
-                "idestado" => $idestado
+                /* "estado" => $estado,
+                "idestado" => $idestado */
             ]; 
             
 
@@ -339,7 +349,43 @@ class AdafruitController extends Controller
     }
 
 
-    public function PromedioHora(){
+    
+
+    public function CronJobParaPromedio(){
+
+       $sensores = Sensor::all()->toArray();
+
+       foreach($sensores as $sensor){
+           
+       $key = config('services.adafruit.key');
+
+            $contador = $i * 1;
+            $fechalimite = Carbon::now()->subDays($contador)->startOfDay()->utc();
+            $fechafinal =Carbon::now()->subDays($contador)->endOfDay()->utc();
+
+            $response = Http::withHeaders([
+                'X-AIO-Key' => $key,  
+            ])->get("https://io.adafruit.com/api/v2/TomasilloV/feeds/sensores.{$sensor['Nombre_Sensor']}/data?start_time={$fechalimite}&end_time={$fechafinal}");
         
+             
+            $data = $response->json(); 
+            
+            
+            foreach($data as $res){
+               
+                $createdAt = \Carbon\Carbon::parse($res['created_at']);
+
+              DB::table('infosensores')->updateOrInsert([
+                'sensor_id' => $sensor['id'],
+                'valor' => $res["value"],
+                'created_at' => $createdAt->toDateTimeString(),
+                
+              ]);
+    
+            } 
+          
+        }
+
+        //}
     }
 }
