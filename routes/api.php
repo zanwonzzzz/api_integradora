@@ -101,3 +101,10 @@ Route::get('/fotobebe/{idestado}', [ImagenController::class, 'RecuperarEstadoBeb
 
 //GUARDAR DATOS DE ADAFRUIT EN LA BASE DE DATOS
 Route::get('/adafruit/guardar/datos', [AdafruitController::class, 'CronJobParaPromedio'])->middleware('auth.jwt');
+
+
+//COMPARACIONES
+Route::get('/gas/{promedio}', [AdafruitController::class, 'GasComparacion'])->middleware('auth.jwt');
+Route::get('/temp/{promedio}', [AdafruitController::class, 'TemperaturaComparacion'])->middleware('auth.jwt');
+Route::get('/sonido/{promedio}', [AdafruitController::class, 'SonidoComparacion'])->middleware('auth.jwt');
+Route::get('/luz/{promedio}', [AdafruitController::class, 'LuzComparacion'])->middleware('auth.jwt');

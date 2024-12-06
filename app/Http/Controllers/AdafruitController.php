@@ -242,15 +242,18 @@ class AdafruitController extends Controller
         
         
         $fechaactual = Carbon::now();
+        $ada = new AdafruitController();
         $cada5dias = [];
         $promedios = [];
         $estado = "";
         $idestado = 0;
+       
 
         $dias = 5;
         for($i=0; $i < $dias; $i++){
 
-            $sensor  = Sensor::find($idsensor);
+            $sensor= Sensor::find($idsensor);
+           
 
             $contador = $i * 1;
             $fechalimite = Carbon::now()->subDays($contador)->startOfDay()->utc();
@@ -291,19 +294,23 @@ class AdafruitController extends Controller
                 $valores = array_column($mismosdias, 'valor');
                 $promedio = array_sum($valores) / count($valores);
 
-                //ESTOS DATOS POR MIENTRAS PQ SON DEL DE GAS
-                /* if($promedio >= 800){
-                    $estado = "triste";
-                    $idestado = 3;
+                if($idsensor === 1){
+                   $result = $ada->GasComparacion($promedio,$estado,$idestado);
                 }
-                else if($promedio < 800 && $promedio >= 400){
-                    $estado = "serio";
-                    $idestado = 2;
+                else if($idsensor === 2){
+                    $result = $ada->TemperaturaComparacion($promedio,$estado,$idestado);
                 }
-                else {
-                    $estado = "feliz";
-                    $idestado = 1;
-                } */
+                else if($idsensor === 3){
+                    $result = $ada->SonidoComparacion($promedio,$estado,$idestado);
+                }
+                else if($idsensor === 5){
+                    $result = $ada->LuzComparacion($promedio,$estado,$idestado);
+                }
+
+                $estado = $result['estado'];
+                $idestado = $result['idestado'];
+                
+
             } else {
                 $promedio = 0;
             }
@@ -312,8 +319,8 @@ class AdafruitController extends Controller
              $resultados[] = [
                 "fecha" => $fechalimite->toDateString(),
                 "promedio" => $promedio,
-                /* "estado" => $estado,
-                "idestado" => $idestado */
+                "estado" => $estado,
+                "idestado" => $idestado 
             ]; 
             
 
@@ -387,5 +394,90 @@ class AdafruitController extends Controller
         }
 
         //}
+    }
+
+
+    public function GasComparacion(int $promedio = 0,$estado = "",$idestado = 0){
+
+        
+        
+                //ESTOS DATOS POR MIENTRAS PQ SON DEL DE GAS
+                 if($promedio >= 700 && $promedio < 1023){
+                    $estado = "triste";
+                    $idestado = 3;
+                }
+                else if($promedio >= 400 && $promedio < 700){
+                    $estado = "serio";
+                    $idestado = 2;
+                }
+                else if($promedio >= 0 && $promedio < 400){
+                    $estado = "feliz";
+                    $idestado = 1;
+                } 
+
+                return ['estado' => $estado, 'idestado' => $idestado];
+
+
+    }
+
+    public function TemperaturaComparacion(int $promedio = 0,$estado = "",$idestado = 0){
+
+        if($promedio >= 36 && $promedio < 100 || $promedio >= 0 && $promedio <= 15){
+            $estado = "triste";
+            $idestado = 3;
+        }
+        else if($promedio >= 25 && $promedio <= 35){
+            $estado = "feliz";
+            $idestado = 1;
+        }
+        else if($promedio > 15 && $promedio < 25){
+            $estado = "serio";
+            $idestado = 2;
+        } 
+
+        return ['estado' => $estado, 'idestado' => $idestado];
+
+    }
+
+    public function SonidoComparacion(int $promedio = 0,$estado = "",$idestado = 0){
+
+        
+
+        if($promedio >= 800 && $promedio < 1023){
+            $estado = "triste";
+            $idestado = 3;
+        }
+        else if($promedio >= 500 && $promedio < 800){
+            $estado = "feliz";
+            $idestado = 1;
+        }
+        else if($promedio >= 0 && $promedio < 500){
+            $estado = "serio";
+            $idestado = 2;
+        } 
+
+        return ['estado' => $estado, 'idestado' => $idestado];
+
+    }
+
+    public function LuzComparacion(int $promedio = 0,$estado = "",$idestado = 0){
+
+       
+
+        if($promedio >= 400){
+            $estado = "triste";
+            $idestado = 3;
+        }
+        else if($promedio >= 50 && $promedio < 400){
+            $estado = "feliz";
+            $idestado = 1;
+        }
+        else if($promedio >= 0 && $promedio < 50){
+            $estado = "serio";
+            $idestado = 2;
+        } 
+
+        return ['estado' => $estado, 'idestado' => $idestado];
+
     }
 }
