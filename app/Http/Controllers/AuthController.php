@@ -10,6 +10,7 @@ use App\Mail\Gmail;
 use Tymon\JWTAuth\Facades\JWTAuth;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Facades\DB;
+use App\Controllers\AdafruitController;
 class AuthController extends Controller
 {
     
@@ -42,6 +43,13 @@ class AuthController extends Controller
         if ($user->cuenta_activa == 0 ) {
             return response()->json(['error' => 'Cuenta no activada.'], 403);
         } else {
+
+            if($user->monitor === 1){
+                $ada = new AdafruitController();
+                $ada->AdafruitSensor();
+            }
+           
+           
             return response()->json([
                 'laravel_token' => $token,
                // 'oswi_token' => $atoken,
@@ -146,7 +154,7 @@ class AuthController extends Controller
             'password' => $credentials['password'],
           ]);*/
 
-          $url= URL::temporarySignedRoute('activacion', now()->addMinutes(1), ['id' => $user->id]);
+          $url= URL::temporarySignedRoute('activacion', now()->addMinutes(5), ['id' => $user->id]);
         Mail::to($user->email)->send(new Gmail($user,$url));
 
         return response()->json([

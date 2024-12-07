@@ -7,6 +7,7 @@ use App\Models\Monitor;
 use App\Models\Sensor;
 use App\Models\MonitorSensor;
 use App\Http\Controllers\AdafruitController;
+use App\Models\User;
 
 class MonitorController extends Controller
 {
@@ -19,6 +20,11 @@ class MonitorController extends Controller
         $monitor->user_id = $id;
         $monitor->Nombre_Monitor = $request->nombre;
         $monitor->save();
+
+        $user = User::find($id);
+        $user->monitor = 1;
+        $user->save();
+        
 
         return response()->json([
             'id' => $monitor->id,
