@@ -93,7 +93,7 @@ Route::get('/foto', [ImagenController::class, 'MostrarFoto'])->middleware('auth.
 //PROMEDIO
 Route::get('/promedio/{idsensor}', [AdafruitController::class, 'Promedio'])->middleware('auth.jwt');
 //PROMEDIO POR HORA
-Route::get('/hora/{idsensor}', [AdafruitController::class, 'PromedioPorHora'])->middleware('auth.jwt');
+Route::get('/hora/{idsensor}/{fechalimite}', [AdafruitController::class, 'PromedioPorHora'])->middleware('auth.jwt');
 
 //SUBIR FOTO DEL BEBE
 Route::post('/fotobebe', [ImagenController::class, 'Fotobebe'])->middleware('auth.jwt'); 

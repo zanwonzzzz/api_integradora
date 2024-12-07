@@ -44,7 +44,7 @@ class AuthController extends Controller
             return response()->json(['error' => 'Cuenta no activada.'], 403);
         } else {
 
-            if($user->monitor === 1){
+            if($user->monitor == 1){
                 $ada = new AdafruitController();
                 $ada->AdafruitSensor();
             }
@@ -154,7 +154,7 @@ class AuthController extends Controller
             'password' => $credentials['password'],
           ]);*/
 
-          $url= URL::temporarySignedRoute('activacion', now()->addMinutes(5), ['id' => $user->id]);
+          $url= URL::temporarySignedRoute('activacion', now()->addMinutes(1), ['id' => $user->id]);
         Mail::to($user->email)->send(new Gmail($user,$url));
 
         return response()->json([

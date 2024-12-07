@@ -541,7 +541,7 @@ class AdafruitController extends Controller
     }
 
 
-    public function PromedioPorHora(int $idsensor = 0){
+    public function PromedioPorHora(int $idsensor = 0, $fechalimite = ""){
 
         $key = config('services.adafruit.key');
         
@@ -554,15 +554,14 @@ class AdafruitController extends Controller
         $idestado = 0;
        
 
-        $dias = 7;
-        for($i=2; $i < $dias; $i++){
 
             $sensor= Sensor::find($idsensor);
            
 
-            $contador = $i * 1; 
-            $fechalimite = Carbon::now()->subDays($contador)->startOfDay()->utc();
-            $fechafinal =Carbon::now()->subDays($contador)->endOfDay()->utc();
+            /* $contador = $i * 1; */ 
+            $fechafinal = $fechalimite;
+            $fechalimite =Carbon::parse($fechalimite)->startOfDay()->utc();
+            $fechafinal =Carbon::parse($fechalimite)->endOfDay()->utc();
 
             /* $horalimite = Carbon::now()->subDays($contador)->format('H:i:s');
             $horafinal =Carbon::now()->subDays($contador)->format('H:i:s'); */
@@ -572,7 +571,9 @@ class AdafruitController extends Controller
             ])->get("https://io.adafruit.com/api/v2/TomasilloV/feeds/sensores.{$sensor->Nombre_Sensor}/data",[
             'start_time' => $fechalimite->toIso8601String(),
             'end_time' => $fechafinal->toIso8601String(),
-        ]);
+         ]);
+
+        /* dd($fechalimite->toIso8601String(),$fechafinal->toIso8601String()); */
              
             $data = $response->json(); 
             $mismosdias= [];
@@ -624,7 +625,7 @@ class AdafruitController extends Controller
                 'fechalimite' => $fechalimite,
                 'fechafinal' => $fechafinal,
             ]; */
-        }
+        
 
        
         /* foreach($cada5dias as $cada5dia){ */

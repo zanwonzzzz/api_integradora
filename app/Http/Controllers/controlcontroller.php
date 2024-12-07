@@ -26,8 +26,8 @@ class controlcontroller extends Controller
             $url= URL::temporarySignedRoute('activacion', now()->addMinutes(1), ['id' => $user->id]);
         Mail::to($user->email)->send(new Gmail($user,$url));
 
-        $user->cuenta_activa = true;
-        $user->save();
+        /* $user->cuenta_activa = true;
+        $user->save(); */
 
         return response()->json([
             "msg" => "reenvio exitoso"
