@@ -685,4 +685,38 @@ class AdafruitController extends Controller
         ]);
 
     }
+
+
+    public function GasChequeo(){
+
+        $key = config('services.adafruit.key');
+        $mismosdias = [];
+        $response = Http::withHeaders([
+            'X-AIO-Key' => $key,  
+        ])->get("https://io.adafruit.com/api/v2/TomasilloV/feeds/sensores.gas/data?start_time=2024-12-03T00:00:00&end_time=2024-12-03T11:59:59");
+    
+         
+        $data = $response->json(); 
+        
+        
+        foreach($data as $res){
+           
+            $createdAt = \Carbon\Carbon::parse($res['created_at']);
+
+          
+           
+                $mismosdias[] = 
+                [
+                    "fecha" => $createdAt,
+                   "valor" => $res["value"]
+                ]; 
+            
+
+        } 
+
+        return response()->json([
+            'mismosdias' => $mismosdias
+        ]);
+
+    }
 }

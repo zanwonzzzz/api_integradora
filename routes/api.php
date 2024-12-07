@@ -107,3 +107,7 @@ Route::get('/adafruit/guardar/datos', [AdafruitController::class, 'CronJobParaPr
 
 Route::get('/movimiento', [AdafruitController::class, 'MovimientoComparacion'])->middleware('auth.jwt');
 
+
+//GAS CHEQUEO
+Route::get('/gas/chequeo', [AdafruitController::class, 'GasChequeo'])->middleware('auth.jwt');
+

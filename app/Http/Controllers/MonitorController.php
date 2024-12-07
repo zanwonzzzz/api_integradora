@@ -83,7 +83,7 @@ class MonitorController extends Controller
         $monitor->sensores()->attach($sensor_id);
 
         $ada = new AdafruitController();
-        $ada->AdafruitSensor($idmonitor);
+        $ada->AdafruitSensor();
       
 
     }

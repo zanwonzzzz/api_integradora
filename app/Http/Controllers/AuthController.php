@@ -10,7 +10,7 @@ use App\Mail\Gmail;
 use Tymon\JWTAuth\Facades\JWTAuth;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Facades\DB;
-use App\Controllers\AdafruitController;
+use App\Http\Controllers\AdafruitController;
 class AuthController extends Controller
 {
     
@@ -39,12 +39,14 @@ class AuthController extends Controller
 
         $user = auth()->user();
         
+        
 
         if ($user->cuenta_activa == 0 ) {
             return response()->json(['error' => 'Cuenta no activada.'], 403);
         } else {
 
             if($user->monitor == 1){
+               
                 $ada = new AdafruitController();
                 $ada->AdafruitSensor();
             }
