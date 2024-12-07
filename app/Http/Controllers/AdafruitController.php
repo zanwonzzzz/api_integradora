@@ -368,7 +368,7 @@ class AdafruitController extends Controller
             if ($idsensor === 3) {
                 $resultados[] = [
                     "fecha" => $fechalimite->toDateString(),
-                    "movimiento" => $movimientosmuchos,
+                    "promedio" => $movimientosmuchos,
                     "estado" => $estado,
                     "idestado" => $idestado
                 ];
