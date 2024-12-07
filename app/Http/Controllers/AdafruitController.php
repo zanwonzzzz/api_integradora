@@ -252,8 +252,9 @@ class AdafruitController extends Controller
         $promedios = [];
         $estado = "";
         $idestado = 0;
-       
+       $sensorespromedios = [1,2,4,5];
 
+       $movimientosmuchos = 0;
         $dias = 7;
         for($i=2; $i < $dias; $i++){
 
@@ -286,16 +287,57 @@ class AdafruitController extends Controller
     
                 if($fecha->isSameDay($fechalimite)){
 
+                    if(in_array($idsensor, $sensorespromedios)){
+                        
                     $mismosdias[] = 
                     [
                         "fecha" => $res["created_at"],
                        "valor" => $res["value"]
                     ];
+                    }
+                    else if($idsensor === 3){
+                        if($res["value"] == 1){
+                            $mismosdias[] =[
+                                "fecha" => $res["created_at"],
+                               "valor" => $res["value"]
+                            ];
+                        }
+                    }
+
                     /* explode(" ", $mismosdias); */
                 }
             } 
+
           
             if (!empty($mismosdias)) {
+
+                if($idsensor === 3){
+
+                    
+
+                    $movimientosmuchos = count($mismosdias);
+
+                    if($movimientosmuchos >= 100){
+                        $estado = "Mucho Movimiento";
+                        $idestado = 1;
+                        
+                    }
+                    else if($movimientosmuchos >= 40 && $movimientosmuchos < 100){
+                        $estado = "Movimiento";
+                        $idestado = 2;
+                    }
+                    else if($movimientosmuchos>= 0 && $movimientosmuchos < 40){
+                        $estado = "Poco Movimiento";
+                        $idestado = 3;
+
+                    }
+                  
+                    
+                }
+
+               else if(in_array($idsensor, $sensorespromedios)){
+                    
+                
                 $valores = array_column($mismosdias, 'valor');
                 $promedio = array_sum($valores) / count($valores);
                 
@@ -306,7 +348,7 @@ class AdafruitController extends Controller
                 else if($idsensor === 2){
                     $result = $ada->TemperaturaComparacion($promedio,$estado,$idestado);
                 }
-                else if($idsensor === 3){
+                else if($idsensor === 4){
                     $result = $ada->SonidoComparacion($promedio,$estado,$idestado);
                 }
                 else if($idsensor === 5){
@@ -315,6 +357,7 @@ class AdafruitController extends Controller
 
                 $estado = $result['estado'];
                 $idestado = $result['idestado'];
+              }
                 
 
             } else {
@@ -322,12 +365,22 @@ class AdafruitController extends Controller
             }
     
             
-             $resultados[] = [
-                "fecha" => $fechalimite->toDateString(),
-                "promedio" => $promedio,
-                "estado" => $estado,
-                "idestado" => $idestado 
-            ]; 
+            if ($idsensor === 3) {
+                $resultados[] = [
+                    "fecha" => $fechalimite->toDateString(),
+                    "movimiento" => $movimientosmuchos,
+                    "estado" => $estado,
+                    "idestado" => $idestado
+                ];
+
+            } else {
+                $resultados[] = [
+                    "fecha" => $fechalimite->toDateString(),
+                    "promedio" => $promedio,
+                    "estado" => $estado,
+                    "idestado" => $idestado
+                ];
+            }
             
 
             /* $cada5dias[] = [
@@ -595,6 +648,39 @@ class AdafruitController extends Controller
        
         return response()->json([
             'resultados' => $resultados
+        ]);
+
+    }
+
+    public function MovimientoComparacion(){
+
+        $key = config('services.adafruit.key');
+        $mismosdias = [];
+        $response = Http::withHeaders([
+            'X-AIO-Key' => $key,  
+        ])->get("https://io.adafruit.com/api/v2/TomasilloV/feeds/sensores.movimiento/data?start_time=2024-12-07T00:00:00&end_time=2024-12-07T11:59:59");
+    
+         
+        $data = $response->json(); 
+        
+        
+        foreach($data as $res){
+           
+            $createdAt = \Carbon\Carbon::parse($res['created_at']);
+
+          
+            if($res["value"] == 1){
+                $mismosdias[] = 
+                [
+                    "fecha" => $createdAt,
+                   "valor" => $res["value"]
+                ]; 
+            };
+
+        } 
+
+        return response()->json([
+            'mismosdias' => $mismosdias
         ]);
 
     }

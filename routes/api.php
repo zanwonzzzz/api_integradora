@@ -105,3 +105,5 @@ Route::get('/fotobebe/{idestado}', [ImagenController::class, 'RecuperarEstadoBeb
 Route::get('/adafruit/guardar/datos', [AdafruitController::class, 'CronJobParaPromedio'])->middleware('auth.jwt');
 
 
+Route::get('/movimiento', [AdafruitController::class, 'MovimientoComparacion'])->middleware('auth.jwt');
+
