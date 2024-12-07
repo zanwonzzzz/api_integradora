@@ -77,7 +77,7 @@ Route::get('/envivo/{idmonitor}', [AdafruitController::class, 'Envivo'])->middle
 Route::get('/ultimo/{idmonitor}', [AdafruitController::class, 'UltimoDato'])->middleware('auth.jwt');
 
 //ACTUALIZAR DATOS DEL USUARIO
-
+Route::put('/actualizar/usuario', [AuthController::class, 'ActualizarUsuario'])->middleware('auth.jwt');
 
 //APAGAR BOCINA
 Route::post('/apagar/bocina/', [AdafruitController::class, 'ApagarBocina'])->middleware('auth.jwt');
@@ -104,10 +104,5 @@ Route::get('/fotobebe/{idestado}', [ImagenController::class, 'RecuperarEstadoBeb
 //GUARDAR DATOS DE ADAFRUIT EN LA BASE DE DATOS
 Route::get('/adafruit/guardar/datos', [AdafruitController::class, 'CronJobParaPromedio'])->middleware('auth.jwt');
 
-
-Route::get('/movimiento', [AdafruitController::class, 'MovimientoComparacion'])->middleware('auth.jwt');
-
-
-//GAS CHEQUEO
-Route::get('/gas/chequeo', [AdafruitController::class, 'GasChequeo'])->middleware('auth.jwt');
-
+//CONSULTAR ESTADO DE LA BOCINA
+Route::get('/bocina/estado', [AdafruitController::class, 'ConsultarEstadoBocina'])->middleware('auth.jwt');

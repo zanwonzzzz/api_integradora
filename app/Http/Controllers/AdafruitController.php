@@ -210,6 +210,44 @@ class AdafruitController extends Controller
             }
     }
 
+    public function ConsultarEstadoBocina(){
+        $key = config('services.adafruit.key');
+        
+
+        $response = Http::withHeaders([
+            'X-AIO-Key' => $key,  
+        ])->get("https://io.adafruit.com/api/v2/TomasilloV/feeds/sensores.estado-bocina/data", [
+            'limit' => 1,
+            'order' => 'desc',
+        ]);
+        
+        /* dd($response); */
+
+            if ($response->successful()) {
+                $data = $response->json();
+
+                foreach($data as $res){
+                    $data = $res['value'];
+                }
+
+               
+
+                
+                     if($data == 1){
+                        return response()->json(['message' => 'bocina encendida']);
+                    }
+                    else if($data == 0){
+                        return response()->json(['message' => 'bocina apagada']);
+                    }
+                 
+
+                
+               
+            } else {
+                return response()->json(['message' => 'Error al enviar los datos'], 500);
+            }
+    }
+
 
     //MANDAR LOS SENSORES DE UN MONITOR A ADAFRUIT
     public function AdafruitSensor(){

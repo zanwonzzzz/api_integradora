@@ -168,4 +168,14 @@ class AuthController extends Controller
             
         ], 201);
     }
+
+
+    public function ActualizarUsuario(Request $request){
+        $id = auth()->user()->id;
+        $user = User::find($id);
+        $user->name = $request->name;
+        $user->password = $request->password;
+        $user->save();
+       
+    }
 }

@@ -52,7 +52,7 @@ class ImagenController extends Controller
     }
 
     //SUBIR FOTOS DEL ESTADO DEL BEBE
-   public function Fotobebe(Request $request){
+  /*  public function Fotobebe(Request $request){
         $validator = Validator::make($request->all(), [
             'archivo' => 'required|image|mimes:jpeg,png,jpg,gif,svg,webp|max:2048',
         ]);
@@ -73,7 +73,7 @@ class ImagenController extends Controller
             /* $contenido = Storage::disk('s3')->get('estados/bebetriste.webp');
             
             return response($contenido, 200)
-            ->header('Content-Type', $user->mime_type);  */
+            ->header('Content-Type', $user->mime_type);  
             return response()->json('Imagen del niño feliz');
         }
         else if ($idestado === 2){
@@ -82,5 +82,5 @@ class ImagenController extends Controller
         else if ($idestado === 3){
             return response()->json('Imagen del niño triste');
         }
-    }
+    } */
 }
