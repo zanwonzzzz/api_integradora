@@ -140,7 +140,7 @@ class AuthController extends Controller
             'foto' => 'nullable|string'
         ]);
         if($validator->fails()){
-            return response()->json($validator->errors()->toJson(),400);
+            return response()->json($validator->errors()->toJson(),422);
         }
 
         $user = User::create(array_merge(
