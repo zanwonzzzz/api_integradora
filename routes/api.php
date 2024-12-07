@@ -83,7 +83,7 @@ Route::get('/ultimo/{idmonitor}', [AdafruitController::class, 'UltimoDato'])->mi
 Route::post('/apagar/bocina/', [AdafruitController::class, 'ApagarBocina'])->middleware('auth.jwt');
 
 //MANDAR LOS SENSORES DE UN MONITOR A ADAFRUIT
-Route::get('/adafruit/mandar/sensores/{id}', [AdafruitController::class, 'AdafruitSensor'])->middleware('auth.jwt');
+Route::get('/adafruit/mandar/sensores/', [AdafruitController::class, 'AdafruitSensor'])->middleware('auth.jwt');
 
 //FOTO DE PERFIL DEL USUARIO
 Route::post('/foto', [ImagenController::class, 'SubirFoto'])->middleware('auth.jwt');
@@ -92,6 +92,8 @@ Route::get('/foto', [ImagenController::class, 'MostrarFoto'])->middleware('auth.
 
 //PROMEDIO
 Route::get('/promedio/{idsensor}', [AdafruitController::class, 'Promedio'])->middleware('auth.jwt');
+//PROMEDIO POR HORA
+Route::get('/hora/{idsensor}', [AdafruitController::class, 'PromedioPorHora'])->middleware('auth.jwt');
 
 //SUBIR FOTO DEL BEBE
 Route::post('/fotobebe', [ImagenController::class, 'Fotobebe'])->middleware('auth.jwt'); 
@@ -103,8 +105,3 @@ Route::get('/fotobebe/{idestado}', [ImagenController::class, 'RecuperarEstadoBeb
 Route::get('/adafruit/guardar/datos', [AdafruitController::class, 'CronJobParaPromedio'])->middleware('auth.jwt');
 
 
-//COMPARACIONES
-Route::get('/gas/{promedio}', [AdafruitController::class, 'GasComparacion'])->middleware('auth.jwt');
-Route::get('/temp/{promedio}', [AdafruitController::class, 'TemperaturaComparacion'])->middleware('auth.jwt');
-Route::get('/sonido/{promedio}', [AdafruitController::class, 'SonidoComparacion'])->middleware('auth.jwt');
-Route::get('/luz/{promedio}', [AdafruitController::class, 'LuzComparacion'])->middleware('auth.jwt');
