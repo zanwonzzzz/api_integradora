@@ -353,8 +353,8 @@ class AdafruitController extends Controller
        $sensorespromedios = [1,2,4,5];
 
        $movimientosmuchos = 0;
-        $dias = 7;
-        for($i=2; $i < $dias; $i++){
+        $dias = 6;
+        for($i=1; $i < $dias; $i++){
 
             $sensor= Sensor::find($idsensor);
            
@@ -362,6 +362,8 @@ class AdafruitController extends Controller
             $contador = $i * 1;
             $fechalimite = Carbon::now()->subDays($contador)->startOfDay()->utc();
             $fechafinal =Carbon::now()->subDays($contador)->endOfDay()->utc();
+
+            
 
             $response = Http::withHeaders([
                 'X-AIO-Key' => $key,  

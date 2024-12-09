@@ -8,41 +8,42 @@ use App\Models\Sensor;
 use App\Models\InfoSensor;
 use Illuminate\Support\Facades\Http;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Log;
 
 class CronJobController extends Controller
 {
     public function CronJobParaGuardarDatos(){
 
-        $sensores = Sensor::all()->toArray();
+        $sensores = [1 => "gas", 2 => "temperatura",3 => "movimiento",4 => "sonido",5 => "luz"];
        /*  dd($sensores); */
 
-        $fechainicial = Carbon::now()->subDays(4)->startOfDay();
-       $fechahoi = Carbon::now()->startOfDay();
-       
+
+       /* $cronJob = DB::table('cronjobs')->where('nombre', 'CargaInicial')->first();
+
+    
+    if (!$cronJob || !$cronJob->completada){ */
+       $dias = 6; 
+
+    for ($i = $dias; $i >= 1; $i--) {
+           $contador = $i; 
+           $fechalimite = Carbon::now()->subDays($i)->startOfDay()->utc();
+           $fechafinal = Carbon::now()->subDays($i)->endOfDay()->utc();
 
       
        
  
-        foreach($sensores as $sensor){
 
-            $ultimafecha = $fechainicial->copy(); 
-
-            while($ultimafecha->lessThan($fechahoi)){
-
-                $fechalimite = $ultimafecha->copy()->setTimezone('UTC')->toIso8601String();
-                $fechafinal = $ultimafecha->copy()->endOfDay()->setTimezone('UTC')->toIso8601String();
-                
-
-              
+        foreach($sensores as $sensorId => $sensorNombre){
 
                 $key = config('services.adafruit.key');
  
              
                 $response = Http::withHeaders([
                     'X-AIO-Key' => $key,  
-                ])->get("https://io.adafruit.com/api/v2/TomasilloV/feeds/sensores.{$sensor['Nombre_Sensor']}/data?start_time={$fechalimite}&end_time={$fechafinal}");
+                ])->get("https://io.adafruit.com/api/v2/TomasilloV/feeds/sensores.{$sensorNombre}/data?start_time={$fechalimite}&end_time={$fechafinal}");
             
                  
+                /* dd($response->json()); */
                 $data = $response->json(); 
                
 
@@ -53,7 +54,7 @@ class CronJobController extends Controller
                     $createdAt = \Carbon\Carbon::parse($res['created_at']);
     
                   DB::table('infosensores')->updateOrInsert([
-                    'sensor_id' => $sensor['id'],
+                    'sensor_id' => $sensorId,
                     'valor' => $res["value"],
                     'created_at' => $createdAt->toDateTimeString(),
                     
@@ -63,20 +64,51 @@ class CronJobController extends Controller
         
                 } 
 
-                $ultimafecha->addDay();
-              
-
+               
             }
+
             
-       
-         }
+            
+            Log::info("Datos procesados para el día: {$fechalimite->toDateString()}");
+         
+        
+        }
  
          DB::table('cronjobs')->updateOrInsert([
             'nombre' => 'CargaInicial',
             'completada' => true
             
           ]);
-     }
+        }
+      /*   if ($cronJob && $cronJob->completada) {
+            $fechalimite = Carbon::now()->startOfDay()->utc(); 
+            $fechafinal = Carbon::now()->endOfDay()->utc();
+    
+            foreach ($sensores as $sensorId => $sensorNombre) {
+                $key = config('services.adafruit.key');
+    
+                // Obtener los datos nuevos
+                $response = Http::withHeaders([
+                    'X-AIO-Key' => $key,
+                ])->get("https://io.adafruit.com/api/v2/TomasilloV/feeds/sensores.{$sensorNombre}/data?start_time={$fechalimite}&end_time={$fechafinal}");
+    
+                $data = $response->json();
+    
+                // Guardar los datos nuevos
+                foreach ($data as $res) {
+                    $createdAt = Carbon::parse($res['created_at']);
+    
+                    DB::table('infosensores')->updateOrInsert([
+                        'sensor_id' => $sensorId,
+                        'valor' => $res["value"],
+                        'created_at' => $createdAt->toDateTimeString(),
+                    ]);
+                }
+            }
+    
+            Log::info("Datos nuevos procesados.");
+        } */
+     
 
      public function CronJobParaEstadoBocina(){
 

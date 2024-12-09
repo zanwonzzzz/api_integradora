@@ -49,7 +49,7 @@ class AuthController extends Controller
             if($user->monitor == 1){
                
                 $ada = new AdafruitController();
-                $ada->AdafruitSensor();
+                $ada->SensorAda();
             }
            
            
