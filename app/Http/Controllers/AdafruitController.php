@@ -1060,12 +1060,13 @@ class AdafruitController extends Controller
                 }
     
                 
-                $promediosPorHora[$hora] = $cantidadValores > 0 ? $totalValores / $cantidadValores : 0;
+                $promediosPorHora[$hora] = $cantidadValores > 0 ? round($totalValores / $cantidadValores, 2) : 0;
+
             }
     
             $resultados[] = [
                 "fecha" => $fechalimite->toDateString(),
-                "promedios_por_hora" => round($promediosPorHora,4),
+                "promedios_por_hora" => $promediosPorHora,
             ];
 
             /* $cada5dias[] = [
