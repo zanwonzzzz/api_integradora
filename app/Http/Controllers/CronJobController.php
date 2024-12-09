@@ -35,9 +35,9 @@ class CronJobController extends Controller
         if ($cronJob->completada === false) {
 
             Log::info("Comenzando la carga inicial de datos...");
-            $dias = 6;
+            $dias = 5;
     
-            for ($i = $dias; $i > 1; $i--) {
+            for ($i = $dias; $i >= 1; $i--) {
                 $fechalimite = Carbon::now()->subDays($i)->startOfDay()->utc();
                 $fechafinal = Carbon::now()->subDays($i)->endOfDay()->utc();
     

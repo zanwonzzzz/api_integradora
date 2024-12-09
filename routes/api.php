@@ -114,7 +114,8 @@ Route::get('/logout', [AuthController::class, 'SalidaUsuario'])->middleware('aut
 
 
 
-
+//PROMEDIOS PERO CON DATOS EN LA BD
+Route::get('/promedio/bd/{idsensor}', [AdafruitController::class, 'Promediobd'])->middleware('auth.jwt');
 
 
 

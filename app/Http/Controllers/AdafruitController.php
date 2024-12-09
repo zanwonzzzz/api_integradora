@@ -784,4 +784,197 @@ class AdafruitController extends Controller
         ]);
 
     }
+
+
+   public function Promediobd(int $idsensor=0){
+
+    $key = config('services.adafruit.key');
+        
+        
+    $fechaactual = Carbon::now();
+    $ada = new AdafruitController();
+    $cada5dias = [];
+    $promedios = [];
+    $estado = "";
+    $idestado = 0;
+   $sensorespromedios = [1,2,4,5];
+
+   $movimientosmuchos = 0;
+    $dias = 6;
+    for($i=1; $i < $dias; $i++){
+
+        $sensor= Sensor::find($idsensor);
+       
+
+        $contador = $i * 1;
+        $fechalimite = Carbon::now()->subDays($contador)->startOfDay()->utc();
+        $fechafinal =Carbon::now()->subDays($contador)->endOfDay()->utc();
+
+       
+
+            if(in_array($idsensor, $sensorespromedios)){
+                    
+                $mismosdias = DB::table('infosensores')
+            ->where('sensor_id', $idsensor)
+            ->whereBetween('created_at', [$fechalimite, $fechafinal])
+            ->get(['created_at', 'valor'])
+            ->toArray();
+                }
+                else if($idsensor === 3){
+                    $mismosdias = DB::table('infosensores')
+                    ->where('sensor_id', $idsensor)
+                    ->whereBetween('created_at', [$fechalimite, $fechafinal])
+                    ->where('valor', 1)
+                    ->get(['created_at', 'valor'])
+                    ->toArray();
+                }
+       /*  $response = Http::withHeaders([
+            'X-AIO-Key' => $key,  
+        ])->get("https://io.adafruit.com/api/v2/TomasilloV/feeds/sensores.{$sensor->Nombre_Sensor}/data?start_time={$fechalimite}&end_time={$fechafinal}");
+         
+        $data = $response->json(); 
+        $mismosdias= [];
+        //dd($sensor->Nombre_Sensor);
+        Log::info('Sensor procesado:', ['id' => $idsensor, 'nombre' => $sensor->Nombre_Sensor]);
+
+
+        foreach($data as $res){
+            $fecha = Carbon::parse($res["created_at"])->utc();
+            /* \Log::info('Fecha procesada:', [
+                'original' => $res['created_at'],
+                'carbon' => $fecha,
+                'esMismoDia' => $fecha->isSameDay($fechalimite),
+                'fechalimite' => $fechalimite
+            ]); 
+          // dd($fecha);
+
+            if($fecha->isSameDay($fechalimite)){
+
+                if(in_array($idsensor, $sensorespromedios)){
+                    
+                $mismosdias[] = 
+                [
+                    "fecha" => $res["created_at"],
+                   "valor" => $res["value"]
+                ];
+                }
+                else if($idsensor === 3){
+                    if($res["value"] == 1){
+                        $mismosdias[] =[
+                            "fecha" => $res["created_at"],
+                           "valor" => $res["value"]
+                        ];
+                    }
+                }
+
+                /* explode(" ", $mismosdias); */
+            //}
+        //}  */
+
+      
+        if (!empty($mismosdias)) {
+
+            if($idsensor === 3){
+
+                
+
+                $movimientosmuchos = count($mismosdias);
+
+                if($movimientosmuchos >= 100){
+                    $estado = "Mucho Movimiento";
+                    $idestado = 1;
+                    
+                }
+                else if($movimientosmuchos >= 40 && $movimientosmuchos < 100){
+                    $estado = "Movimiento";
+                    $idestado = 2;
+                }
+                else if($movimientosmuchos>= 0 && $movimientosmuchos < 40){
+                    $estado = "Poco Movimiento";
+                    $idestado = 3;
+
+                }
+              
+                
+            }
+
+           else if(in_array($idsensor, $sensorespromedios)){
+                
+            
+            $valores = array_column($mismosdias, 'valor');
+            $promedio = array_sum($valores) / count($valores);
+            
+
+            if($idsensor === 1){
+               $result = $ada->GasComparacion($promedio,$estado,$idestado);
+            }
+            else if($idsensor === 2){
+                $result = $ada->TemperaturaComparacion($promedio,$estado,$idestado);
+            }
+            else if($idsensor === 4){
+                $result = $ada->SonidoComparacion($promedio,$estado,$idestado);
+            }
+            else if($idsensor === 5){
+                $result = $ada->LuzComparacion($promedio,$estado,$idestado);
+            }
+
+            $estado = $result['estado'];
+            $idestado = $result['idestado'];
+          }
+            
+
+        } else {
+            $promedio = 0;
+        }
+
+        
+        if ($idsensor === 3) {
+            $resultados[] = [
+                "fecha" => $fechalimite->toDateString(),
+                "promedio" => $movimientosmuchos,
+                "estado" => $estado,
+                "idestado" => $idestado
+            ];
+
+        } else {
+            $resultados[] = [
+                "fecha" => $fechalimite->toDateString(),
+                "promedio" => round($promedio),
+                "estado" => $estado,
+                "idestado" => $idestado
+            ];
+        }
+        
+
+        /* $cada5dias[] = [
+            'fechalimite' => $fechalimite,
+            'fechafinal' => $fechafinal,
+        ]; */
+    }
+
+   
+    /* foreach($cada5dias as $cada5dia){ */
+
+       /*  $fechalimite = $cada5dia['fechalimite'];
+        $fechafinal = $cada5dia['fechafinal'];
+*/
+        
+      
+       
+
+   // }
+
+   /*  rsort($mismosdias);
+
+    $mayor = $mismosdias[0];
+    $menor = end($mismosdias);
+    $promedio = ($mayor + $menor)/2;  */
+    
+
+   
+    return response()->json([
+        'resultados' => $resultados
+    ]);
+
+   }
 }
