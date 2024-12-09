@@ -108,6 +108,9 @@ Route::get('/adafruit/guardar/datos', [AdafruitController::class, 'CronJobParaPr
 //CONSULTAR ESTADO DE LA BOCINA
 Route::get('/bocina/estado', [AdafruitController::class, 'ConsultarEstadoBocina'])->middleware('auth.jwt');
 
+//LOGOUT
+Route::get('/logout', [AuthController::class, 'SalidaUsuario'])->middleware('auth.jwt');
+
 
 
 
