@@ -32,7 +32,7 @@ class CronJobController extends Controller
         }
     
         
-        if ($cronJob->completada === false) {
+        if ($cronJob->completada == false) {
 
             Log::info("Comenzando la carga inicial de datos...");
             $dias = 5;
