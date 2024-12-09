@@ -549,18 +549,15 @@ class AdafruitController extends Controller
             $estado = "Temperatura alta";
             $idestado = 3;
         }
-        else if($promedio >= 0 && $promedio <= 15){
+        else if($promedio >= 0 && $promedio <= 20){
             $estado = "Temperatura baja";
             $idestado = 3;
         }
-        else if($promedio >= 25 && $promedio <= 35){
+        else if($promedio >= 21 && $promedio <= 35){
             $estado = "Temperatura media";
             $idestado = 1;
         }
-        else if($promedio > 15 && $promedio < 25){
-            $estado = "Temperatura normal";
-            $idestado = 2;
-        } 
+        
 
         return ['estado' => $estado, 'idestado' => $idestado];
 
