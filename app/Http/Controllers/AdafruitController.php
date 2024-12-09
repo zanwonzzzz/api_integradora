@@ -100,7 +100,7 @@ class AdafruitController extends Controller
            $response = Http::withHeaders([
             'X-AIO-Key' => $key,  
         ])->get("https://io.adafruit.com/api/v2/TomasilloV/feeds/sensores.{$sensor->Nombre_Sensor}/data", [
-            'limit' => 1,
+            'limit' => 10,
             'order' => 'desc',
         ]);
         
