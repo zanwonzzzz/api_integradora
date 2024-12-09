@@ -91,6 +91,8 @@ class MonitorController extends Controller
     
     //borrar sensores q eligio
      public function eliminar_sensores(int $idmonitor=0){
+        
+        $adafruitsensores = [];
         $key = config('services.adafruit.key');
         $monitor = auth()->user()->monitor()->find($idmonitor);
        
