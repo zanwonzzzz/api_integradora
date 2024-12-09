@@ -89,3 +89,9 @@ Route::get('/foto', [ImagenController::class, 'MostrarFoto'])->middleware('auth.
 
 //PROMEDIO
 Route::get('/promedio', [AdafruitController::class, 'Promedio'])->middleware('auth.jwt');
+
+//SUBIR FOTO DEL BEBE
+Route::post('/fotobebe', [ImagenController::class, 'Fotobebe'])->middleware('auth.jwt'); 
+
+//RECUPERAR FOTO DEL ESTADO DEL BEBE
+Route::get('/fotobebe/{idestado}', [ImagenController::class, 'RecuperarEstadoBebe'])->middleware('auth.jwt'); 

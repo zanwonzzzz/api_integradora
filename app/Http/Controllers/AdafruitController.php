@@ -287,4 +287,9 @@ class AdafruitController extends Controller
             'resultados' => $resultados
         ]);
     }
+
+
+    public function PromedioHora(){
+        
+    }
 }
