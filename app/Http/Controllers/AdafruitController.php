@@ -1065,7 +1065,7 @@ class AdafruitController extends Controller
     
             $resultados[] = [
                 "fecha" => $fechalimite->toDateString(),
-                "promedios_por_hora" => $promediosPorHora,
+                "promedios_por_hora" => round($promediosPorHora,4),
             ];
 
             /* $cada5dias[] = [
