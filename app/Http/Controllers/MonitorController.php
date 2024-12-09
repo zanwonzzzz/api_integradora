@@ -120,6 +120,9 @@ class MonitorController extends Controller
         'value' => $value,
     ]);
 
+
+    $controler = new MonitorController();
+    $controler->borrarmonitor($idmonitor);
         
     }
 
