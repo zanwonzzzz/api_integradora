@@ -171,10 +171,18 @@ class AuthController extends Controller
 
 
     public function ActualizarUsuario(Request $request){
+        $validator = Validator::make($request->all(), [
+            'name' => 'required',
+            'password' => 'required|string|min:6'
+        ]);
+        if($validator->fails()){
+            return response()->json($validator->errors()->toJson(),422);
+        }
+
         $id = auth()->user()->id;
         $user = User::find($id);
         $user->name = $request->name;
-        $user->password = $request->password;
+        $user->password = bcrypt($request->password);
         $user->save();
        
     }
