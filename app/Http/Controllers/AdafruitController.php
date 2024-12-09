@@ -11,6 +11,9 @@ use App\Controllers\MonitorController;
 use App\Models\Monitor;
 use App\Models\MonitorSensor;
 use Illuminate\Support\Facades\Validator;
+use Carbon\Carbon;
+use Illuminate\Support\Facades\Log;
+use App\Models\Estado;
 class AdafruitController extends Controller
 {
     public function obtener(int $id =0){
@@ -175,5 +178,113 @@ class AdafruitController extends Controller
             'value' => implode(',', $adafruitsensores)
         ]);
         
+    }
+
+
+    public function Promedio(){
+        $key = config('services.adafruit.key');
+        //$sensor  = Sensor::find($id);
+        
+        $fechaactual = Carbon::now();
+        $cada5dias = [];
+        $promedios = [];
+        $estado = "";
+        $idestado = 0;
+
+        $dias = 5;
+        for($i=0; $i < $dias; $i++){
+
+            $contador = $i * 1;
+            $fechalimite = Carbon::now()->subDays($contador)->startOfDay()->utc();
+            $fechafinal =Carbon::now()->subDays($contador)->endOfDay()->utc();
+
+            $response = Http::withHeaders([
+                'X-AIO-Key' => $key,  
+            ])->get("https://io.adafruit.com/api/v2/TomasilloV/feeds/sensores.gas/data?start_time={$fechalimite}&end_time={$fechafinal}");
+             
+            $data = $response->json(); 
+            $mismosdias= [];
+             
+    
+            foreach($data as $res){
+                $fecha = Carbon::parse($res["created_at"])->utc();
+                \Log::info('Fecha procesada:', [
+                    'original' => $res['created_at'],
+                    'carbon' => $fecha,
+                    'esMismoDia' => $fecha->isSameDay($fechalimite),
+                    'fechalimite' => $fechalimite
+                ]);
+              // dd($fecha);
+    
+                if($fecha->isSameDay($fechalimite)){
+
+                    $mismosdias[] = 
+                    [
+                        "fecha" => $res["created_at"],
+                       "valor" => $res["value"]
+                    ];
+                    /* explode(" ", $mismosdias); */
+                }
+            } 
+          
+            if (!empty($mismosdias)) {
+                $valores = array_column($mismosdias, 'valor');
+                $promedio = array_sum($valores) / count($valores);
+
+                //ESTOS DATOS POR MIENTRAS PQ SON DEL DE GAS
+                if($promedio >= 800){
+                    $estado = "triste";
+                    $idestado = 3;
+                }
+                else if($promedio < 800 && $promedio >= 400){
+                    $estado = "serio";
+                    $idestado = 2;
+                }
+                else {
+                    $estado = "feliz";
+                    $idestado = 1;
+                }
+            } else {
+                $promedio = 0;
+            }
+    
+            
+             $resultados[] = [
+                "fecha" => $fechalimite->toDateString(),
+                "promedio" => $promedio,
+                "estado" => $estado,
+                "idestado" => $idestado
+            ]; 
+            
+
+            /* $cada5dias[] = [
+                'fechalimite' => $fechalimite,
+                'fechafinal' => $fechafinal,
+            ]; */
+        }
+
+       
+        /* foreach($cada5dias as $cada5dia){ */
+
+           /*  $fechalimite = $cada5dia['fechalimite'];
+            $fechafinal = $cada5dia['fechafinal'];
+ */
+            
+          
+           
+    
+       // }
+
+       /*  rsort($mismosdias);
+    
+        $mayor = $mismosdias[0];
+        $menor = end($mismosdias);
+        $promedio = ($mayor + $menor)/2;  */
+        
+
+       
+        return response()->json([
+            'resultados' => $resultados
+        ]);
     }
 }

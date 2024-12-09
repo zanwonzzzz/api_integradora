@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\Monitor;
 use App\Models\Sensor;
 use App\Models\MonitorSensor;
+use App\Http\Controllers\AdafruitController;
 
 class MonitorController extends Controller
 {
@@ -20,8 +21,8 @@ class MonitorController extends Controller
         $monitor->save();
 
         return response()->json([
-            'msg' => 'Monitor creado',
-            'data' => $monitor
+            'id' => $monitor->id,
+            'nombre' => $monitor->Nombre_Monitor,
         ], 200);
 
     }
@@ -68,11 +69,15 @@ class MonitorController extends Controller
     public function elegir_sensores(int $idmonitor=0,int $idsensor=0){
         
     
-
-        $monitor = auth()->user()->monitor()->find($idmonitor);
+         
+         $monitor = auth()->user()->monitor()->find($idmonitor); 
+        //$monitor = Monitor::find($idmonitor);
         $sensor_id = Sensor::find($idsensor);
-        
+       
         $monitor->sensores()->attach($sensor_id);
+
+        $ada = new AdafruitController();
+        $ada->AdafruitSensor($idmonitor);
       
 
     }
@@ -84,6 +89,9 @@ class MonitorController extends Controller
         $sensor_id = Sensor::find($idsensor);
         
         $monitor->sensores()->detach($sensor_id);
+
+        $ada = new AdafruitController();
+        $ada->AdafruitSensor($idmonitor);
     }
 
     //obtener sensores de un monitor

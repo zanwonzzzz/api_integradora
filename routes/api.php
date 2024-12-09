@@ -85,3 +85,7 @@ Route::get('/adafruit/mandar/sensores/{id}', [AdafruitController::class, 'Adafru
 //FOTO DE PERFIL DEL USUARIO
 Route::post('/foto', [ImagenController::class, 'SubirFoto'])->middleware('auth.jwt');
 Route::get('/foto', [ImagenController::class, 'MostrarFoto'])->middleware('auth.jwt');
+
+
+//PROMEDIO
+Route::get('/promedio', [AdafruitController::class, 'Promedio'])->middleware('auth.jwt');
