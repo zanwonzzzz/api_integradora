@@ -14,8 +14,9 @@ class CronJobController extends Controller
     public function CronJobParaGuardarDatos(){
 
         $sensores = Sensor::all()->toArray();
+       /*  dd($sensores); */
 
-        $fechainicial = Carbon::now()->subDays(5)->startOfDay();
+        $fechainicial = Carbon::now()->subDays(4)->startOfDay();
        $fechahoi = Carbon::now()->startOfDay();
        
 

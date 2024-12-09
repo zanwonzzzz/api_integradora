@@ -270,11 +270,11 @@ class AdafruitController extends Controller
       
          return $adafruitsensores;
 
-           $response = Http::withHeaders([
+           /* $response = Http::withHeaders([
             'X-AIO-Key' => $key,  
         ])->post("https://io.adafruit.com/api/v2/TomasilloV/feeds/sensores.bocina/data", [
             'value' => implode(',', $adafruitsensores)
-        ]);
+        ]); */
 
 
         
