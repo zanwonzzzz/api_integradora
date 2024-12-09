@@ -827,6 +827,8 @@ class AdafruitController extends Controller
                     ->where('valor', 1)
                     ->get(['created_at', 'valor'])
                     ->toArray();
+
+                   
                 }
        /*  $response = Http::withHeaders([
             'X-AIO-Key' => $key,  
@@ -877,8 +879,10 @@ class AdafruitController extends Controller
             if($idsensor === 3){
 
                 
-
-                $movimientosmuchos = count($mismosdias);
+                    $movimientosmuchos = count($mismosdias);
+                
+                
+                
 
                 if($movimientosmuchos >= 100){
                     $estado = "Mucho Movimiento";
@@ -889,7 +893,7 @@ class AdafruitController extends Controller
                     $estado = "Movimiento";
                     $idestado = 2;
                 }
-                else if($movimientosmuchos >= 0 && $movimientosmuchos < 40 || $movimientosmuchos === 0){
+                else if($movimientosmuchos >= 0 && $movimientosmuchos < 40){
                     $estado = "Poco Movimiento";
                     $idestado = 3;
 
