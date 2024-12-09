@@ -526,15 +526,15 @@ class AdafruitController extends Controller
         
                 //ESTOS DATOS POR MIENTRAS PQ SON DEL DE GAS
                  if($promedio >= 700 && $promedio < 1023){
-                    $estado = "triste";
+                    $estado = "Nivel de gas alto";
                     $idestado = 3;
                 }
                 else if($promedio >= 400 && $promedio < 700){
-                    $estado = "serio";
+                    $estado = "Nivel de gas medio";
                     $idestado = 2;
                 }
                 else if($promedio >= 0 && $promedio < 400){
-                    $estado = "feliz";
+                    $estado = "Nivel de gas bajo";
                     $idestado = 1;
                 } 
 
@@ -545,16 +545,20 @@ class AdafruitController extends Controller
 
     public function TemperaturaComparacion(int $promedio = 0,$estado = "",$idestado = 0){
 
-        if($promedio >= 36 && $promedio < 100 || $promedio >= 0 && $promedio <= 15){
-            $estado = "triste";
+        if($promedio >= 36 && $promedio < 100 ){
+            $estado = "Temperatura alta";
+            $idestado = 3;
+        }
+        else if($promedio >= 0 && $promedio <= 15){
+            $estado = "Temperatura baja";
             $idestado = 3;
         }
         else if($promedio >= 25 && $promedio <= 35){
-            $estado = "feliz";
+            $estado = "Temperatura media";
             $idestado = 1;
         }
         else if($promedio > 15 && $promedio < 25){
-            $estado = "serio";
+            $estado = "Temperatura normal";
             $idestado = 2;
         } 
 
@@ -567,15 +571,15 @@ class AdafruitController extends Controller
         
 
         if($promedio >= 800 && $promedio < 1023){
-            $estado = "triste";
+            $estado = "Sonido fuerte";
             $idestado = 3;
         }
         else if($promedio >= 500 && $promedio < 800){
-            $estado = "feliz";
+            $estado = "Sonido normal";
             $idestado = 1;
         }
         else if($promedio >= 0 && $promedio < 500){
-            $estado = "serio";
+            $estado = "Sonido bajo";
             $idestado = 2;
         } 
 
@@ -588,15 +592,15 @@ class AdafruitController extends Controller
        
 
         if($promedio >= 400){
-            $estado = "triste";
+            $estado = "Mucha luz";
             $idestado = 3;
         }
         else if($promedio >= 50 && $promedio < 400){
-            $estado = "feliz";
+            $estado = "Luz normal";
             $idestado = 1;
         }
         else if($promedio >= 0 && $promedio < 50){
-            $estado = "serio";
+            $estado = "Poca luz";
             $idestado = 2;
         } 
 
