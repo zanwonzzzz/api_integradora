@@ -299,15 +299,22 @@ class AdafruitController extends Controller
         $id = auth()->user()->id;
         $monitores = Monitor::where('user_id', $id)->pluck('id');
 
-
+/* 
         $monitorsensor = MonitorSensor::whereIn('monitor_id', $monitores)->pluck('sensor_id');
 
 
          $sensores = Sensor::whereIn('id', $monitorsensor)->pluck('id');
         
-         $adafruitsensores = $sensores->toArray();
+         $adafruitsensores = $sensores->toArray(); */
          //dd($adafruitsensores);
        
+         $monitorsensor = MonitorSensor::whereIn('monitor_id', $monitores)->get(['sensor_id']);
+
+         // Convierte a un array y extrae solo los IDs de sensores
+         foreach ($monitorsensor as $monitorSensor) {
+             $adafruitsensores[] = $monitorSensor->sensor_id;
+         }
+         
       
          
 
