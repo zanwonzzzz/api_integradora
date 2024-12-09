@@ -889,7 +889,7 @@ class AdafruitController extends Controller
                     $estado = "Movimiento";
                     $idestado = 2;
                 }
-                else if($movimientosmuchos>= 0 && $movimientosmuchos < 40){
+                else if($movimientosmuchos >= 0 && $movimientosmuchos < 40){
                     $estado = "Poco Movimiento";
                     $idestado = 3;
 
