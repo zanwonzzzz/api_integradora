@@ -526,15 +526,15 @@ class AdafruitController extends Controller
         
                 //ESTOS DATOS POR MIENTRAS PQ SON DEL DE GAS
                  if($promedio >= 700 && $promedio < 1023){
-                    $estado = "Nivel de gas alto";
+                    $estado = "Calidad de Aire Mala";
                     $idestado = 3;
                 }
                 else if($promedio >= 400 && $promedio < 700){
-                    $estado = "Nivel de gas medio";
+                    $estado = "Calidad de Aire Normal";
                     $idestado = 2;
                 }
                 else if($promedio >= 0 && $promedio < 400){
-                    $estado = "Nivel de gas bajo";
+                    $estado = "Calidad de Aire Buena";
                     $idestado = 1;
                 } 
 
@@ -546,15 +546,15 @@ class AdafruitController extends Controller
     public function TemperaturaComparacion(int $promedio = 0,$estado = "",$idestado = 0){
 
         if($promedio >= 36 && $promedio < 100 ){
-            $estado = "Temperatura alta";
+            $estado = "Temperatura Alta";
             $idestado = 3;
         }
         else if($promedio >= 0 && $promedio <= 20){
-            $estado = "Temperatura baja";
+            $estado = "Temperatura Baja";
             $idestado = 3;
         }
         else if($promedio >= 21 && $promedio <= 35){
-            $estado = "Temperatura media";
+            $estado = "Temperatura Normal";
             $idestado = 1;
         }
         
@@ -568,15 +568,15 @@ class AdafruitController extends Controller
         
 
         if($promedio >= 800 && $promedio < 1023){
-            $estado = "Sonido fuerte";
+            $estado = "Sonido Alto";
             $idestado = 3;
         }
         else if($promedio >= 500 && $promedio < 800){
-            $estado = "Sonido normal";
+            $estado = "Sonido Normal";
             $idestado = 1;
         }
         else if($promedio >= 0 && $promedio < 500){
-            $estado = "Sonido bajo";
+            $estado = "Sonido Bajo";
             $idestado = 2;
         } 
 
@@ -589,15 +589,15 @@ class AdafruitController extends Controller
        
 
         if($promedio >= 400){
-            $estado = "Mucha luz";
+            $estado = "Nivel de Luz Alto";
             $idestado = 3;
         }
         else if($promedio >= 50 && $promedio < 400){
-            $estado = "Luz normal";
+            $estado = "Nivel de Luz Normal";
             $idestado = 1;
         }
         else if($promedio >= 0 && $promedio < 50){
-            $estado = "Poca luz";
+            $estado = "Nivel de Luz Bajo";
             $idestado = 2;
         } 
 
@@ -892,7 +892,7 @@ class AdafruitController extends Controller
                     
                 }
                 else if($movimientosmuchos >= 40 && $movimientosmuchos < 100){
-                    $estado = "Movimiento";
+                    $estado = "Algo de Movimiento";
                     $idestado = 2;
                 }
                 else if($movimientosmuchos >= 0 && $movimientosmuchos < 40){
