@@ -23,7 +23,7 @@ class controlcontroller extends Controller
         $user = User::where('email', $email)->firstOrFail();
 
         if($user->cuenta_activa == 0){
-            $url= URL::temporarySignedRoute('activacion', now()->addMinutes(1), ['id' => $user->id]);
+            $url= URL::temporarySignedRoute('activacion', now()->addMinutes(5), ['id' => $user->id]);
         Mail::to($user->email)->send(new Gmail($user,$url));
 
         /* $user->cuenta_activa = true;

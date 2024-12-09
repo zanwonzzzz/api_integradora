@@ -11,6 +11,7 @@ use Tymon\JWTAuth\Facades\JWTAuth;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\AdafruitController;
+use Illuminate\Support\Facades\Http;
 class AuthController extends Controller
 {
     
@@ -156,7 +157,7 @@ class AuthController extends Controller
             'password' => $credentials['password'],
           ]);*/
 
-          $url= URL::temporarySignedRoute('activacion', now()->addMinutes(1), ['id' => $user->id]);
+          $url= URL::temporarySignedRoute('activacion', now()->addMinutes(5), ['id' => $user->id]);
         Mail::to($user->email)->send(new Gmail($user,$url));
 
         return response()->json([
@@ -185,5 +186,17 @@ class AuthController extends Controller
         $user->password = bcrypt($request->password);
         $user->save();
        
+    }
+
+    public function SalidaUsuario(){
+
+        $key = config('services.adafruit.key');
+
+
+        $response = Http::withHeaders([
+            'X-AIO-Key' => $key,  
+        ])->post("https://io.adafruit.com/api/v2/TomasilloV/feeds/sensores.bocina/data", [
+            'value' => 'logout'
+        ]);
     }
 }
