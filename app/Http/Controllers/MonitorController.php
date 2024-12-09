@@ -99,7 +99,10 @@ class MonitorController extends Controller
 
       if($response){
             $monitor->sensores()->detach($response);
+
       }
+
+      $ada->AdafruitSensor();
         
         
         
