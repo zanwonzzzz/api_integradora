@@ -402,6 +402,7 @@ class AdafruitController extends Controller
                                "valor" => $res["value"]
                             ];
                         }
+                        
                     }
 
                     /* explode(" ", $mismosdias); */
@@ -426,7 +427,7 @@ class AdafruitController extends Controller
                         $estado = "Movimiento";
                         $idestado = 2;
                     }
-                    else if($movimientosmuchos>= 0 && $movimientosmuchos < 40){
+                    else if($movimientosmuchos >= 0 && $movimientosmuchos < 40){
                         $estado = "Poco Movimiento";
                         $idestado = 3;
 
@@ -824,7 +825,7 @@ class AdafruitController extends Controller
                     $mismosdias = DB::table('infosensores')
                     ->where('sensor_id', $idsensor)
                     ->whereBetween('created_at', [$fechalimite, $fechafinal])
-                    ->where('valor', 1)
+                    ->where('valor',1)
                     ->get(['created_at', 'valor'])
                     ->toArray();
 
