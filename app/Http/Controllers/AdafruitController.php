@@ -342,7 +342,7 @@ class AdafruitController extends Controller
           $sensores = Sensor::whereIn('id', $monitorsensor)->pluck('id');
          
           $adafruitsensores = $sensores->toArray();
-          //dd($adafruitsensores);
+          dd($adafruitsensores);
 
            
          
