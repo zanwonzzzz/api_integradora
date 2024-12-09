@@ -982,4 +982,124 @@ class AdafruitController extends Controller
     ]);
 
    }
-}
+
+
+  
+    public function promediobdporhora(int $idsensor = 0, $fechalimite = ""){
+
+        $key = config('services.adafruit.key');
+        
+        
+        $fechaactual = Carbon::now();
+        $ada = new AdafruitController();
+        $cada5dias = [];
+        $promedios = [];
+        $estado = "";
+        $idestado = 0;
+       
+
+
+            $sensor= Sensor::find($idsensor);
+           
+
+            /* $contador = $i * 1; */ 
+            /* $fechafinal = $fechalimite; */
+            $fechalimite =Carbon::parse($fechalimite)->startOfDay()->utc();
+            $fechafinal =Carbon::parse($fechalimite)->endOfDay()->utc();
+
+           /*  dd($fechalimite,$fechafinal); */
+
+            /* $horalimite = Carbon::now()->subDays($contador)->format('H:i:s');
+            $horafinal =Carbon::now()->subDays($contador)->format('H:i:s'); */
+
+            /* $response = Http::withHeaders([
+                'X-AIO-Key' => $key,  
+            ])->get("https://io.adafruit.com/api/v2/TomasilloV/feeds/sensores.{$sensor->Nombre_Sensor}/data",[
+            'start_time' => $fechalimite->toIso8601String(),
+            'end_time' => $fechafinal->toIso8601String(),
+         ]);
+ */
+        /* dd($fechalimite->toIso8601String(),$fechafinal->toIso8601String()); */
+             
+            /* $data = $response->json(); */ 
+            $mismosdias= [];
+            $mismashoras= [];
+            //dd($sensor->Nombre_Sensor);
+            Log::info('Sensor procesado:', ['id' => $idsensor, 'nombre' => $sensor->Nombre_Sensor]);
+
+            $data = DB::table('infosensores')
+            ->where('sensor_id', $idsensor)
+            ->whereBetween('created_at', [$fechalimite, $fechafinal])
+            ->get(['created_at', 'valor']);
+           /*  ->toArray(); */
+
+    
+           foreach ($data as $res) {
+            $fecha = Carbon::parse($res->created_at)->utc();
+    
+            if ($fecha->isSameDay($fechalimite)) {
+                $mismosdias[] = [
+                    "fecha" => $fecha,
+                    "valor" => $res->valor, 
+                ];
+            }
+        }
+
+            $promediosPorHora = [];
+          
+            for ($hora = 0; $hora < 24; $hora++) {
+                $totalValores = 0;
+                $cantidadValores = 0;
+    
+                foreach ($mismosdias as $item) {
+                    $horaItem = $item['fecha']->hour; 
+                    if ($horaItem === $hora) {
+                        $totalValores += $item['valor'];
+                        $cantidadValores++;
+                    }
+                }
+    
+                
+                $promediosPorHora[$hora] = $cantidadValores > 0 ? $totalValores / $cantidadValores : 0;
+            }
+    
+            $resultados[] = [
+                "fecha" => $fechalimite->toDateString(),
+                "promedios_por_hora" => $promediosPorHora,
+            ];
+
+            /* $cada5dias[] = [
+                'fechalimite' => $fechalimite,
+                'fechafinal' => $fechafinal,
+            ]; */
+        
+
+       
+        /* foreach($cada5dias as $cada5dia){ */
+
+           /*  $fechalimite = $cada5dia['fechalimite'];
+            $fechafinal = $cada5dia['fechafinal'];
+ */
+            
+          
+           
+    
+       // }
+
+       /*  rsort($mismosdias);
+    
+        $mayor = $mismosdias[0];
+        $menor = end($mismosdias);
+        $promedio = ($mayor + $menor)/2;  */
+        
+
+       
+        return response()->json([
+            'resultados' => $resultados
+        ]);
+
+    }
+
+   }
+
+

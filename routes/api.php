@@ -91,9 +91,9 @@ Route::post('/foto', [ImagenController::class, 'SubirFoto'])->middleware('auth.j
 Route::get('/foto', [ImagenController::class, 'MostrarFoto'])->middleware('auth.jwt');
 
 
-//PROMEDIO
-Route::get('/promedio/{idsensor}', [AdafruitController::class, 'Promedio'])->middleware('auth.jwt');
-//PROMEDIO POR HORA
+//PROMEDIO DE ADAFRUIT
+Route::get('/promedio/adafruit/{idsensor}', [AdafruitController::class, 'Promedio'])->middleware('auth.jwt');
+//PROMEDIO POR HORA DE ADAFRUIT
 Route::get('/hora/{idsensor}/{fechalimite}', [AdafruitController::class, 'PromedioPorHora'])->middleware('auth.jwt');
 
 //SUBIR FOTO DEL BEBE
@@ -115,7 +115,10 @@ Route::get('/logout', [AuthController::class, 'SalidaUsuario'])->middleware('aut
 
 
 //PROMEDIOS PERO CON DATOS EN LA BD
-Route::get('/promedio/bd/{idsensor}', [AdafruitController::class, 'Promediobd'])->middleware('auth.jwt');
+Route::get('/promedio/{idsensor}', [AdafruitController::class, 'Promediobd'])->middleware('auth.jwt');
+
+//PROMEDIOS POR HORA PERO CON DATOS EN LA BD
+Route::get('/hora/bd/{idsensor}/{fechalimite}', [AdafruitController::class, 'promediobdporhora'])->middleware('auth.jwt');
 
 
 
