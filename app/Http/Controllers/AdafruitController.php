@@ -267,7 +267,38 @@ class AdafruitController extends Controller
          $adafruitsensores = $sensores->toArray();
          //dd($adafruitsensores);
        
+      
+         return $adafruitsensores;
+
+           $response = Http::withHeaders([
+            'X-AIO-Key' => $key,  
+        ])->post("https://io.adafruit.com/api/v2/TomasilloV/feeds/sensores.bocina/data", [
+            'value' => implode(',', $adafruitsensores)
+        ]);
+
+
         
+    }
+
+    public function SensorAda(){
+
+        $adafruitsensores = [];
+       $key = config('services.adafruit.key');
+         
+        $id = auth()->user()->id;
+        $monitores = Monitor::where('user_id', $id)->pluck('id');
+
+
+        $monitorsensor = MonitorSensor::whereIn('monitor_id', $monitores)->pluck('sensor_id');
+
+
+         $sensores = Sensor::whereIn('id', $monitorsensor)->pluck('id');
+        
+         $adafruitsensores = $sensores->toArray();
+         //dd($adafruitsensores);
+       
+      
+         
 
            $response = Http::withHeaders([
             'X-AIO-Key' => $key,  

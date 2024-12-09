@@ -8,7 +8,7 @@ use App\Models\Sensor;
 use App\Models\MonitorSensor;
 use App\Http\Controllers\AdafruitController;
 use App\Models\User;
-
+use Illuminate\Support\Facades\Http;
 class MonitorController extends Controller
 {
 
@@ -83,7 +83,7 @@ class MonitorController extends Controller
         $monitor->sensores()->attach($sensor_id);
 
         $ada = new AdafruitController();
-        $ada->AdafruitSensor();
+        $ada->SensorAda();
       
 
     }
@@ -91,6 +91,7 @@ class MonitorController extends Controller
     
     //borrar sensores q eligio
      public function eliminar_sensores(int $idmonitor=0){
+        $key = config('services.adafruit.key');
         $monitor = auth()->user()->monitor()->find($idmonitor);
        
 
@@ -102,7 +103,23 @@ class MonitorController extends Controller
 
       }
 
-      $ada->AdafruitSensor();
+
+      $otra =$ada->AdafruitSensor();
+
+      if(empty($otra)){
+        $response = Http::withHeaders([
+            'X-AIO-Key' => $key,  
+        ])->post("https://io.adafruit.com/api/v2/TomasilloV/feeds/sensores.bocina/data", [
+            'value' => 'logout'
+        ]);
+      }
+      else {
+        $response = Http::withHeaders([
+            'X-AIO-Key' => $key,  
+        ])->post("https://io.adafruit.com/api/v2/TomasilloV/feeds/sensores.bocina/data", [
+            'value' => implode(',', $adafruitsensores)
+        ]);
+      }
         
         
         
