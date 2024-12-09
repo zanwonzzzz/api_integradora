@@ -97,34 +97,28 @@ class MonitorController extends Controller
         $monitor = auth()->user()->monitor()->find($idmonitor);
        
 
-        $ada = new AdafruitController();
-        $response =$ada->BorrarSensores($idmonitor);
+        $adafruitController = new AdafruitController();
 
-      if($response){
-            $monitor->sensores()->detach($response);
-
-      }
-
-
-      $otra =$ada->AdafruitSensor();
-
-      if(empty($otra)){
-        $response = Http::withHeaders([
-            'X-AIO-Key' => $key,  
-        ])->post("https://io.adafruit.com/api/v2/TomasilloV/feeds/sensores.bocina/data", [
-            'value' => 'logout'
-        ]);
-      }
-      else {
-        $response = Http::withHeaders([
-            'X-AIO-Key' => $key,  
-        ])->post("https://io.adafruit.com/api/v2/TomasilloV/feeds/sensores.bocina/data", [
-            'value' => implode(',', $adafruitsensores)
-        ]);
-      }
         
+        $sensoresEliminados = $adafruitController->BorrarSensores($idmonitor);
+        $monitor->sensores()->detach($sensoresEliminados);
+    
         
-        
+        $sensoresActualizados = $adafruitController->AdafruitSensor();
+
+    
+    if (empty($sensoresActualizados)) {
+        $value = 'logout'; 
+    } else {
+        $value = implode(',', $sensoresActualizados); 
+    }
+
+    
+    $response = Http::withHeaders([
+        'X-AIO-Key' => $key,
+    ])->post("https://io.adafruit.com/api/v2/TomasilloV/feeds/sensores.bocina/data", [
+        'value' => $value,
+    ]);
 
         
     }
