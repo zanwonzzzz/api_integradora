@@ -259,7 +259,7 @@ class AdafruitController extends Controller
         $monitores = Monitor::where('user_id', $id)->pluck('id');
 
 
-        $monitorsensor = MonitorSensor::whereIn('monitor_id', $monitores)->pluck('sensor_id');
+       /*  $monitorsensor = MonitorSensor::whereIn('monitor_id', $monitores)->pluck('sensor_id');
 
 
          $sensores = Sensor::whereIn('id', $monitorsensor)->pluck('id');
@@ -268,7 +268,18 @@ class AdafruitController extends Controller
          //dd($adafruitsensores);
        
       
-         return $adafruitsensores;
+         return $adafruitsensores; */
+
+         $monitorsensor = MonitorSensor::whereIn('monitor_id', $monitores)
+        ->get(['monitor_id', 'sensor_id']);
+
+   
+    foreach ($monitorsensor as $monitorSensor) {
+        $adafruitsensores[] = $monitorSensor->sensor_id;
+    }
+
+   
+    return $adafruitsensores;
 
            /* $response = Http::withHeaders([
             'X-AIO-Key' => $key,  
