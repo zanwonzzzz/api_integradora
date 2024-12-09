@@ -90,14 +90,21 @@ class MonitorController extends Controller
 
     
     //borrar sensores q eligio
-     public function eliminar_sensores(int $idmonitor=0,int $idsensor=0){
+     public function eliminar_sensores(int $idmonitor=0){
         $monitor = auth()->user()->monitor()->find($idmonitor);
-        $sensor_id = Sensor::find($idsensor);
-        
-        $monitor->sensores()->detach($sensor_id);
+       
 
         $ada = new AdafruitController();
-        $ada->AdafruitSensor($idmonitor);
+        $response =$ada->BorrarSensores($idmonitor);
+
+      if($response){
+            $monitor->sensores()->detach($response);
+      }
+        
+        
+        
+
+        
     }
 
     //obtener sensores de un monitor

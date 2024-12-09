@@ -10,6 +10,7 @@ use App\Http\Controllers\controlcontroller;
 use App\Http\Controllers\MonitorController;
 use App\Http\Controllers\SensorController;
 use App\Http\Controllers\ImagenController;
+use App\Http\Controllers\CronJobController; 
 
 /*
 |--------------------------------------------------------------------------
@@ -57,7 +58,7 @@ Route::delete('/monitor/{id}',[MonitorController::class,'borrarmonitor'])->middl
 //MONITORES Y SUS SENSORES
 
 Route::get('/sensor/{idmonitor}/{id}',[MonitorController::class,'elegir_sensores'])->middleware('auth.jwt');
-Route::delete('/sensores/{idmonitor}/{id}',[MonitorController::class,'eliminar_sensores'])->middleware('auth.jwt');
+Route::delete('/sensores/{idmonitor}/',[MonitorController::class,'eliminar_sensores'])->middleware('auth.jwt');
 Route::get('/sensores/{id}',[MonitorController::class,'SensoresMonitor'])->middleware('auth.jwt');
 
 //REENVIO DE ACTIVACION DE LA CUENTA
@@ -106,3 +107,38 @@ Route::get('/adafruit/guardar/datos', [AdafruitController::class, 'CronJobParaPr
 
 //CONSULTAR ESTADO DE LA BOCINA
 Route::get('/bocina/estado', [AdafruitController::class, 'ConsultarEstadoBocina'])->middleware('auth.jwt');
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//PROBAR CRONJOBS
+Route::get('/cronjobs', [CronJobController::class, 'CronJobParaGuardarDatos'])->middleware('auth.jwt');
+
+
+//BORRAR SENSORES
+Route::get('/sensorsitos/{id}',[AdafruitController::class,'BorrarSensores'])->middleware('auth.jwt');

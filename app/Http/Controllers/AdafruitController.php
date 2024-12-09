@@ -279,6 +279,33 @@ class AdafruitController extends Controller
         
     }
 
+    public function BorrarSensores($idmonitor){
+        $adafruitsensores = [];
+        $key = config('services.adafruit.key');
+          
+         $id = auth()->user()->id;
+         $monitor = Monitor::where('user_id', $id)->where('id', $idmonitor)->first();
+ 
+ 
+         $monitorsensor = MonitorSensor::whereIn('monitor_id', $monitor)->pluck('sensor_id');
+ 
+ 
+          $sensores = Sensor::whereIn('id', $monitorsensor)->pluck('id');
+         
+          $adafruitsensores = $sensores->toArray();
+          //dd($adafruitsensores);
+
+           return $adafruitsensores; 
+        
+         
+ /* 
+            $response = Http::withHeaders([
+             'X-AIO-Key' => $key,  
+         ])->post("https://io.adafruit.com/api/v2/TomasilloV/feeds/sensores.bocina/data", [
+             'value' => implode(',', $adafruitsensores)
+         ]); */
+    }
+
 
     public function Promedio(int $idsensor=0){
         $key = config('services.adafruit.key');
@@ -455,44 +482,7 @@ class AdafruitController extends Controller
 
     
 
-    public function CronJobParaPromedio(){
-
-       $sensores = Sensor::all()->toArray();
-
-       foreach($sensores as $sensor){
-           
-       $key = config('services.adafruit.key');
-
-            $contador = $i * 1;
-            $fechalimite = Carbon::now()->subDays($contador)->startOfDay()->utc();
-            $fechafinal =Carbon::now()->subDays($contador)->endOfDay()->utc();
-
-            $response = Http::withHeaders([
-                'X-AIO-Key' => $key,  
-            ])->get("https://io.adafruit.com/api/v2/TomasilloV/feeds/sensores.{$sensor['Nombre_Sensor']}/data?start_time={$fechalimite}&end_time={$fechafinal}");
-        
-             
-            $data = $response->json(); 
-            
-            
-            foreach($data as $res){
-               
-                $createdAt = \Carbon\Carbon::parse($res['created_at']);
-
-              DB::table('infosensores')->updateOrInsert([
-                'sensor_id' => $sensor['id'],
-                'valor' => $res["value"],
-                'created_at' => $createdAt->toDateTimeString(),
-                
-              ]);
     
-            } 
-          
-        }
-
-        //}
-    }
-
 
     public function GasComparacion(int $promedio = 0,$estado = "",$idestado = 0){
 
@@ -600,6 +590,8 @@ class AdafruitController extends Controller
             $fechafinal = $fechalimite;
             $fechalimite =Carbon::parse($fechalimite)->startOfDay()->utc();
             $fechafinal =Carbon::parse($fechalimite)->endOfDay()->utc();
+
+           /*  dd($fechalimite,$fechafinal); */
 
             /* $horalimite = Carbon::now()->subDays($contador)->format('H:i:s');
             $horafinal =Carbon::now()->subDays($contador)->format('H:i:s'); */
