@@ -70,8 +70,11 @@ Route::post('reenvio/', [controlcontroller::class, 'reenvio'])->name('reenvio');
 Route::post('/adafruit/mandar', [AdafruitController::class, 'crear'])->middleware('auth.jwt');
 Route::get('/adafruit/{id}', [AdafruitController::class, 'obtener'])->middleware('auth.jwt');
 
+//ULTIMOS 10 DATOS
+Route::get('/envivo/{idmonitor}', [AdafruitController::class, 'Envivo'])->middleware('auth.jwt');
+
 //DATOS EN VIVO LAST DATA
-Route::get('/envivo/{id}', [AdafruitController::class, 'Envivo'])->middleware('auth.jwt');
+Route::get('/ultimo/{idmonitor}', [AdafruitController::class, 'UltimoDato'])->middleware('auth.jwt');
 
 //ACTUALIZAR DATOS DEL USUARIO
 
