@@ -46,7 +46,7 @@ Route::group([
 Route::get('control/{id}', [controlcontroller::class, 'index'])->name('activacion')->middleware('signed');
 
 //SENSORES 
-Route::post('/sensor',[SensorController::class,'agregarsensor'])->middleware('auth.jwt');
+Route::post('/sensor/agregar',[SensorController::class,'agregarsensor'])->middleware('auth.jwt');
 Route::get('/sensores',[SensorController::class,'obtenersensores'])->middleware('auth.jwt');
 Route::delete('/sensor/eliminar/{id}',[SensorController::class,'eliminarsensor'])->middleware('auth.jwt');
 
