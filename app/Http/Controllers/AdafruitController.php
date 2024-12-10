@@ -334,6 +334,10 @@ class AdafruitController extends Controller
           
          $id = auth()->user()->id;
          $monitor = Monitor::where('user_id', $id)->where('id', $idmonitor)->first();
+
+         if(!$monitor){
+             return response()->json(['message' => 'Monitor no encontrado'], 404);
+         }
  
  
          $monitorsensor = MonitorSensor::whereIn('monitor_id', $monitor)->pluck('sensor_id');
