@@ -176,9 +176,17 @@ class AuthController extends Controller
             'name' => 'required',
             'password' => 'required|string|min:6'
         ]);
-        if($validator->fails()){
-            return response()->json($validator->errors()->toJson(),422);
+        /* if($validator->fails()){
+            return response()->json($validator->errors(),422);
+        } */
+
+        if($request->name == auth()->user()->name || $request->password == auth()->user()->password){
+            return response()->json([
+                'msg' => 'No se han realizado cambios'
+                ],422);
+                
         }
+           
 
         $id = auth()->user()->id;
         $user = User::find($id);

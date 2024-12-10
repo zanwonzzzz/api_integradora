@@ -171,9 +171,11 @@ class CronJobController extends Controller
 
                 
                      if($data == 1){
+                        Log::info("bocina encendida");
                         return response()->json(['message' => 'bocina encendida']);
                     }
                     else if($data == 0){
+                        Log::info("bocina apagada");
                         return response()->json(['message' => 'bocina apagada']);
                     }
                  
