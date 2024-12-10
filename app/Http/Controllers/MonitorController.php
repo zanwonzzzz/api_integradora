@@ -113,6 +113,10 @@ class MonitorController extends Controller
         $value = implode(',', $sensoresActualizados); 
     }
 
+
+    $controler = new MonitorController();
+    $controler->borrarmonitor($idmonitor);
+
     
     $response = Http::withHeaders([
         'X-AIO-Key' => $key,
@@ -121,8 +125,7 @@ class MonitorController extends Controller
     ]);
 
 
-    $controler = new MonitorController();
-    $controler->borrarmonitor($idmonitor);
+    
         
     }
 
