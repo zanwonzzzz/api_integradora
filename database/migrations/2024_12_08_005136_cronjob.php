@@ -15,7 +15,7 @@ return new class extends Migration
     {
         Schema::create('cronjobs', function (Blueprint $table) {
             $table->id();
-            $table->text('nombre');
+            $table->text('nombre')->nullable();
             $table->boolean('completada')->default(false);
             $table->softDeletes();
             $table->timestamps();

@@ -3,7 +3,7 @@
 namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
-use App\Http\Controllers\AdafruitController;
+use App\Http\Controllers\CronJobController;
 
 class ConsumirAdafruit extends Command
 {
@@ -28,8 +28,12 @@ class ConsumirAdafruit extends Command
      */
     public function handle()
     {
-        $ada = new AdafruitController();
-        $ada->CronJobParaPromedio();
-        /* return Command::SUCCESS; */
+        try {
+            $ada = new CronJobController();
+            $ada->CronJobParaGuardarDatos();
+            $this->info("Datos guardados correctamente.");
+        } catch (\Exception $e) {
+            $this->error("Error al ejecutar CronJob: " . $e->getMessage());
+        }
     }
 }

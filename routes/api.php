@@ -141,6 +141,7 @@ Route::get('/logout', [AuthController::class, 'SalidaUsuario'])->middleware('aut
 
 //PROBAR CRONJOBS
 Route::get('/cronjobs', [CronJobController::class, 'CronJobParaGuardarDatos'])->middleware('auth.jwt');
+Route::get('/cronjobs2', [CronJobController::class, 'CronJobParaDatosNuevos'])->middleware('auth.jwt');
 
 
 //BORRAR SENSORES

@@ -4,6 +4,7 @@ namespace App\Console;
 
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
+use App\Models\CronJob; 
 
 class Kernel extends ConsoleKernel
 {
@@ -15,12 +16,21 @@ class Kernel extends ConsoleKernel
      */
 
      protected $commands = [
-        Commands\ConsumirAdafruit::class
+        Commands\ConsumirAdafruit::class ,
+       Commands\EstadoBocina::class 
      ];
 
     protected function schedule(Schedule $schedule)
     {
-        $schedule->command('Consumir:Adafruit')->everyMinute();
+       
+    
+           
+            $schedule->command('Consumir:Adafruit')->everyMinute();
+        
+    
+        
+        $schedule->command('Estado:Bocina')->everyMinute();
+       
     }
 
     /**
