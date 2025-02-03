@@ -328,7 +328,7 @@ class AdafruitController extends Controller
         
     }
 
-    public function BorrarSensores($idmonitor){
+    /*public function BorrarSensores($idmonitor){
         $adafruitsensores = [];
         $key = config('services.adafruit.key');
           
@@ -357,7 +357,28 @@ class AdafruitController extends Controller
              'value' => implode(',', $adafruitsensores)
          ]);  */
 
-         return $adafruitsensores; 
+         //return $adafruitsensores; 
+        
+    //}
+
+    public function BorrarSensores($idmonitor,$idsensor)
+    {
+        $adafruitsensores = [];
+        $key = config('services.adafruit.key');
+          
+         $id = auth()->user()->id;
+         $monitor = Monitor::where('user_id', $id)->where('id', $idmonitor)->first();
+
+         if(!$monitor){
+             return response()->json(['message' => 'Monitor no encontrado'], 404);
+         }
+ 
+ 
+         $monitorsensor = MonitorSensor::where('monitor_id',$monitor->id)->where('sensor_id',$idsensor)->pluck('sensor_id')->first();
+ 
+ 
+
+         return $monitorsensor; 
         
     }
 

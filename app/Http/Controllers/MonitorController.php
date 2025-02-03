@@ -82,15 +82,15 @@ class MonitorController extends Controller
        
         $monitor->sensores()->attach($sensor_id);
 
-        $ada = new AdafruitController();
-        $ada->SensorAda();
+        //$ada = new AdafruitController();
+        //$ada->SensorAda();
       
 
     }
 
     
     //borrar sensores q eligio
-     public function eliminar_sensores(int $idmonitor=0){
+   /*   public function eliminar_sensores(int $idmonitor=0){
         
         $adafruitsensores = [];
         $key = config('services.adafruit.key');
@@ -114,8 +114,8 @@ class MonitorController extends Controller
     }
 
 
-    $controler = new MonitorController();
-    $controler->borrarmonitor($idmonitor);
+    //$controler = new MonitorController();
+    //$controler->borrarmonitor($idmonitor);
 
     
     $response = Http::withHeaders([
@@ -127,7 +127,50 @@ class MonitorController extends Controller
 
     
         
-    }
+    } */
+
+    public function eliminar_sensores(int $idmonitor=0,int $idsensor=0){
+        
+        $adafruitsensores = [];
+        $key = config('services.adafruit.key');
+        $monitor = auth()->user()->monitor()->find($idmonitor);
+       
+
+        $adafruitController = new AdafruitController();
+
+        
+        $sensoresEliminados = $adafruitController->BorrarSensores($idmonitor,$idsensor);
+
+        if(!empty($sensoresEliminados))
+        {
+        $monitor->sensores()->detach($sensoresEliminados);
+        }
+    
+        
+        $sensoresActualizados = $adafruitController->AdafruitSensor();
+
+    
+     if (empty($sensoresActualizados)) {
+        $value = 'logout'; 
+     } else {
+        $value = implode(',', $sensoresActualizados); 
+     }
+
+
+     //$controler = new MonitorController();
+     //$controler->borrarmonitor($idmonitor);
+
+    
+     $response = Http::withHeaders([
+        'X-AIO-Key' => $key,
+     ])->post("https://io.adafruit.com/api/v2/TomasilloV/feeds/sensores.bocina/data", [
+        'value' => $value,
+     ]);
+
+
+    
+        
+    } 
 
     //obtener sensores de un monitor
     public function SensoresMonitor(int $idmonitor=0){

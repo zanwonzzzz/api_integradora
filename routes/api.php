@@ -57,9 +57,12 @@ Route::delete('/monitor/{id}',[MonitorController::class,'borrarmonitor'])->middl
 
 //MONITORES Y SUS SENSORES
 
-Route::get('/sensor/{idmonitor}/{id}',[MonitorController::class,'elegir_sensores'])->middleware('auth.jwt');
-Route::delete('/sensores/{idmonitor}/',[MonitorController::class,'eliminar_sensores'])->middleware('auth.jwt');
+Route::get('/sensor/{idmonitor}/{id}',[MonitorController::class,'elegir_sensores'])->middleware('auth.jwt'); //EN REPARACION
+Route::delete('/sensores/{idmonitor}/{idsensor}',[MonitorController::class,'eliminar_sensores'])->middleware('auth.jwt');
 Route::get('/sensores/{id}',[MonitorController::class,'SensoresMonitor'])->middleware('auth.jwt');
+
+//MANDAR SENSORES QUE ELGIO A ADAFRUIT
+Route::get('/sensor/ada',[AdafruitController::class,'SensorAda'])->middleware('auth.jwt');//DUDA
 
 //REENVIO DE ACTIVACION DE LA CUENTA
 Route::post('reenvio/', [controlcontroller::class, 'reenvio'])->name('reenvio');
