@@ -54,7 +54,7 @@ class AuthController extends Controller
            
            
             return response()->json([
-                'laravel_token' => $token,
+                'token' => $token,
                // 'oswi_token' => $atoken,
             ]);
         }
