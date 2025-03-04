@@ -158,8 +158,8 @@ class AuthController extends Controller
             'password' => $credentials['password'],
           ]);*/
 
-          $url= URL::temporarySignedRoute('activacion', now()->addMinutes(5), ['id' => $user->id]);
-        Mail::to($user->email)->send(new Gmail($user,$url));
+        //   $url= URL::temporarySignedRoute('activacion', now()->addMinutes(5), ['id' => $user->id]);
+        // Mail::to($user->email)->send(new Gmail($user,$url));
 
         return response()->json([
             
