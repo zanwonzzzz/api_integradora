@@ -3,6 +3,7 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\DB;
 
 return new class extends Migration
 {
@@ -31,6 +32,14 @@ return new class extends Migration
 
             $table->foreign('rol_id')->references('id')->on('roles')->onDelete('cascade');
         });
+
+        DB::table('users')->insert([
+            'name' => 'admin',
+            'email' => 'babysaveus@gmail.com',
+            'password' => bcrypt('12345678'),
+            'rol_id' => 3,
+            'cuenta_activa' => true,
+        ]);
     }
 
     /**

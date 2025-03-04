@@ -13,16 +13,12 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('cronjobs', function (Blueprint $table) {
+        Schema::create('cronjob', function (Blueprint $table) {
             $table->id();
             $table->text('nombre')->nullable();
             $table->boolean('completada')->default(false);
             $table->softDeletes();
             $table->timestamps();
-
-            
-
-
         });
     }
 

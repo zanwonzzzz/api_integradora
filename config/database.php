@@ -93,6 +93,12 @@ return [
             // 'trust_server_certificate' => env('DB_TRUST_SERVER_CERTIFICATE', 'false'),
         ],
 
+        'mongodb' => [
+            'driver' => 'mongodb',
+            'dsn' => env('DB_URI', 'mongodb+srv://myAtlasDBUser:6FHvrSmI8v3kLsO0@myatlasclusteredu.c5nk4.mongodb.net/?retryWrites=true&w=majority&appName=myAtlasClusterEDU'),
+            'database' => 'iot',
+        ],
+
     ],
 
     /*
