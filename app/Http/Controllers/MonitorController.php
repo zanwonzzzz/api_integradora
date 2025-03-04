@@ -47,12 +47,9 @@ class MonitorController extends Controller
 
     //monitores que tiene un usuario
     public function monitor_usuario(){
-        $id = auth()->user()->id;
+        $id =1;
         $monitores = Monitor::where('user_id', $id)->get();
-        return response()->json([
-            'msg' => 'Monitores',
-            'data' => $monitores
-        ], 200);
+        return response()->json($monitores, 200);
     }
 
     //borrar monitor
