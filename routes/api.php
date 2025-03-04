@@ -53,7 +53,7 @@ Route::delete('/sensor/eliminar/{id}',[SensorController::class,'eliminarsensor']
 
 //MONITORES
 Route::post('/monitor',[MonitorController::class,'crearm_s'])->middleware('auth.jwt');
-Route::get('/monitores',[MonitorController::class,'monitor_usuario'])->middleware('auth.jwt');
+Route::get('/monitores',[MonitorController::class,'monitor_usuario']);
 Route::delete('/monitor/{id}',[MonitorController::class,'borrarmonitor'])->middleware('auth.jwt');
 
 //MONITORES Y SUS SENSORES

@@ -17,6 +17,7 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('user_id');
             $table->string('Nombre_Monitor');
+            $table->string('Ubicacion');
             $table->softDeletes();
             $table->timestamps();
 

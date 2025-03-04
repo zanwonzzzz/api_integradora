@@ -9,16 +9,28 @@ use App\Models\MonitorSensor;
 use App\Http\Controllers\AdafruitController;
 use App\Models\User;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Validator;
+
 class MonitorController extends Controller
 {
 
     //crear monitor
     public function crearm_s(request $request){
+
+        $validator = Validator::make($request->all(), [
+            'nombre' => 'required|string|max:100',
+            'ubicacion' => 'nullable|string'
+        ]);
+        if($validator->fails()){
+            return response()->json($validator->errors()->toJson(),422);
+        }
+
         $id = auth()->user()->id;
 
         $monitor = new Monitor();
         $monitor->user_id = $id;
         $monitor->Nombre_Monitor = $request->nombre;
+        $monitor->Ubicacion = $request->ubicacion;
         $monitor->save();
 
         $user = User::find($id);
@@ -35,12 +47,9 @@ class MonitorController extends Controller
 
     //monitores que tiene un usuario
     public function monitor_usuario(){
-        $id = auth()->user()->id;
+        $id =1;
         $monitores = Monitor::where('user_id', $id)->get();
-        return response()->json([
-            'msg' => 'Monitores',
-            'data' => $monitores
-        ], 200);
+        return response()->json($monitores, 200);
     }
 
     //borrar monitor
