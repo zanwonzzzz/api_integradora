@@ -3,6 +3,7 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\DB;
 
 return new class extends Migration
 {
@@ -19,6 +20,14 @@ return new class extends Migration
             $table->softDeletes();
             $table->timestamps();
         });
+
+        DB::table('sensores')->insert([
+            ['Nombre_Sensor' => 'gas'],
+            ['Nombre_Sensor' => 'temperatura'],
+            ['Nombre_Sensor' => 'movimiento'],
+            ['Nombre_Sensor' => 'sonido'],
+            ['Nombre_Sensor' => 'luz'],
+        ]);
     }
 
     /**
