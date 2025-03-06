@@ -36,6 +36,13 @@ class MonitorController extends Controller
         $user = User::find($id);
         $user->monitor = 1;
         $user->save();
+
+        $sendToMongoController = new SendToMongoDataController();
+        $sendToMongoController->sendMonitorToMongo(new Request([
+            'id' => $monitor->id,
+            'user_id' => $monitor->user_id,
+            'Nombre_Monitor' => $monitor->Nombre_Monitor
+        ]));
         
 
         return response()->json([
@@ -85,7 +92,7 @@ class MonitorController extends Controller
         
     
          
-         $monitor = auth()->user()->monitor()->find($idmonitor); 
+        $monitor = auth()->user()->monitor()->find($idmonitor); 
         //$monitor = Monitor::find($idmonitor);
         $sensor_id = Sensor::find($idsensor);
        
@@ -93,8 +100,12 @@ class MonitorController extends Controller
 
         //$ada = new AdafruitController();
         //$ada->SensorAda();
-      
 
+        $sendToMongoController = new SendToMongoDataController();
+        $sendToMongoController->sendMonitorSensorToMongo(new Request([
+            'monitor_id' => $monitor->id,
+            'sensor_id' => $sensor_id->id
+        ]));
     }
 
     

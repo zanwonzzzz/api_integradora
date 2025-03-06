@@ -33,7 +33,7 @@ class SensorDataEvent implements ShouldBroadcast
      */
     public function broadcastOn()
     {
-        return new PrivateChannel('sensor-websocket');
+        return new Channel('sensor-websocket');
     }
 
     public function broadcastAs()

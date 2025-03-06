@@ -12,6 +12,7 @@ use App\Http\Controllers\SensorController;
 use App\Http\Controllers\ImagenController;
 use App\Http\Controllers\CronJobController; 
 use App\Http\Controllers\SensorDataController;
+use App\Http\Controllers\SendToMongoDataController;
 
 /*
 |--------------------------------------------------------------------------
@@ -156,5 +157,5 @@ Route::get('/cronjobs2', [CronJobController::class, 'CronJobParaDatosNuevos'])->
 Route::get('/sensorsitos/{id}',[AdafruitController::class,'BorrarSensores'])->middleware('auth.jwt');
 
 //DATA SENSORES 
-Route::get('/sensor-data', [SensorDataController::class, 'index'])->middleware('auth.jwt');
-Route::post('/sensor-data', [SensorDataController::class, 'store'])->middleware('auth.jwt');
+Route::get('/sensor-data/{id}', [SensorDataController::class, 'index']);
+Route::post('/sensor-data', [SensorDataController::class, 'store']);

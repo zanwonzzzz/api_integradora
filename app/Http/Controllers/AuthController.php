@@ -12,6 +12,8 @@ use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\AdafruitController;
 use Illuminate\Support\Facades\Http;
+use App\Http\Controllers\SendToMongoDataController;
+
 class AuthController extends Controller
 {
     
@@ -143,6 +145,7 @@ class AuthController extends Controller
             'foto' => 'nullable|string',
             'rol_id'=>'nullable|number'
         ]);
+
         if($validator->fails()){
             return response()->json($validator->errors()->toJson(),422);
         }
@@ -160,6 +163,13 @@ class AuthController extends Controller
 
         //   $url= URL::temporarySignedRoute('activacion', now()->addMinutes(5), ['id' => $user->id]);
         // Mail::to($user->email)->send(new Gmail($user,$url));
+
+        $sendToMongoController = new SendToMongoDataController();
+        $sendToMongoController->sendUserToMongo(new Request([
+            'id' => $user->id,
+            'name' => $user->name,
+            'email' => $user->email
+        ]));
 
         return response()->json([
             

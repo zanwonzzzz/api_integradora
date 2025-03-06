@@ -21,6 +21,11 @@ class SensorController extends Controller
         $sensor->Nombre_Sensor = $request->sensor;
         $sensor->save();
 
+        $sendToMongoController = new SendToMongoDataController();
+        $sendToMongoController->sendSensorToMongo(new Request([
+            'id' => $sensor->id,
+            'Nombre_Sensor' => $sensor->Nombre_Sensor
+        ]));
     }
 
     public function obtenersensores(){
