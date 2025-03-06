@@ -203,19 +203,7 @@ class MonitorController extends Controller
             
         
         
-        
-        
-
-        return response()->json([
-            'msg' => 'Sensores por monitor',
-            'data' => [
-                'monitor' => [
-                    'id' => $monitor->id,
-                    'sensores' => $sensores
-                ],
-                
-            ]
-        ], 200);
+        return response()->json($sensores,200);
         
     }
 
