@@ -207,5 +207,12 @@ class MonitorController extends Controller
         
     }
 
+
+    public function MonitorAMongo(request $request)
+    {
+        $monitor = Monitor::find($request->idMonitor);
+
+    }
+
     
 }
