@@ -171,3 +171,4 @@ Route::get('/todos', [AdminController::class, 'UsuariosTodos'])->middleware('aut
 Route::get('/activos', [AdminController::class, 'UsuariosActivos'])->middleware('auth.jwt');
 Route::get('/inactivos', [AdminController::class, 'UsuariosInactivos'])->middleware('auth.jwt');
 Route::get('/desactivar/{id}', [AdminController::class, 'DesactivarCuenta'])->middleware('auth.jwt');
+Route::get('/activar/{id}', [AdminController::class, 'ActivarCuenta'])->middleware('auth.jwt');
