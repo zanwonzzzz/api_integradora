@@ -170,3 +170,4 @@ Route::post('/datos-mongo',[MonitorController::class,'MonitorAMongo']);
 Route::get('/todos', [AdminController::class, 'UsuariosTodos'])->middleware('auth.jwt');
 Route::get('/activos', [AdminController::class, 'UsuariosActivos'])->middleware('auth.jwt');
 Route::get('/inactivos', [AdminController::class, 'UsuariosInactivos'])->middleware('auth.jwt');
+Route::get('/desactivar/{id}', [AdminController::class, 'DesactivarCuenta'])->middleware('auth.jwt');
