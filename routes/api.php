@@ -161,6 +161,8 @@ Route::get('/sensorsitos/{id}',[AdafruitController::class,'BorrarSensores'])->mi
 Route::get('/sensor-data/{id}', [SensorDataController::class, 'index']);
 Route::post('/sensor-data', [SensorDataController::class, 'store']);
 
+//DATOS DEL MONITOR A MONGO
+Route::post('/datos-mongo',[MonitorController::class,'MonitorAMongo']);
 
 
 

@@ -54,13 +54,14 @@ class SendToMongoDataController extends Controller
         return null;
     }
 
-    public function sendMonitorMonitorToMongo(Request $request)
+    public function sendDatosMonitorToMongo(Request $request)
     {
-        $data = new MonitorSensorMongo();
-        $data->monitor_id = $request->monitor_id;
-        $data->sensor_id = $request->sensor_id;
+        $data = new DatosMonitor();
+        $data->id_monitor = $request->id_monitor;
+        $data->sensor = $request->sensor;
+        $data->Fecha = $request->Fecha;
         $data->save();
 
-        return null;
+        return "ola";
     }
 }

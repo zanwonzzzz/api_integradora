@@ -10,4 +10,9 @@ class DatosMonitor extends Model
     use HasFactory;
     protected $connection = 'mongodb';
     protected $collection = 'DatosMonitores';
+
+
+    public $timestamps = false; 
+    
+    protected $fillable = ['id_monitor', 'sensor', 'Fecha'];
 }
