@@ -8,6 +8,7 @@ use App\Models\SensorMongo;
 use App\Models\MonitorMongo;
 use App\Models\MonitorSensorMongo;
 use App\Models\UserMongo;
+use App\Models\DatosMonitor;
 
 class SendToMongoDataController extends Controller
 {
@@ -44,6 +45,16 @@ class SendToMongoDataController extends Controller
     }
 
     public function sendMonitorSensorToMongo(Request $request)
+    {
+        $data = new MonitorSensorMongo();
+        $data->monitor_id = $request->monitor_id;
+        $data->sensor_id = $request->sensor_id;
+        $data->save();
+
+        return null;
+    }
+
+    public function sendMonitorMonitorToMongo(Request $request)
     {
         $data = new MonitorSensorMongo();
         $data->monitor_id = $request->monitor_id;

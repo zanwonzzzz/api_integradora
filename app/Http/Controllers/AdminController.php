@@ -18,7 +18,7 @@ class AdminController extends Controller
         {
             return response()->json('Ese usuario no existe',422);
         }
-        if($user->role_id == 2){
+        if($user->role_id == 3){
             return response()->json(['msg' => 'No se puede desactivar a un admin'], 403);
         }
 

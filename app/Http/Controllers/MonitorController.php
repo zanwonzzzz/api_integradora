@@ -8,6 +8,7 @@ use App\Models\Sensor;
 use App\Models\MonitorSensor;
 use App\Http\Controllers\AdafruitController;
 use App\Models\User;
+use App\Models\MonitorMongo;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Validator;
 
@@ -54,7 +55,7 @@ class MonitorController extends Controller
 
     //monitores que tiene un usuario
     public function monitor_usuario(){
-        $id =1;
+        $id =auth()->user->id;
         $monitores = Monitor::where('user_id', $id)->get();
         return response()->json($monitores, 200);
     }
@@ -211,6 +212,8 @@ class MonitorController extends Controller
     public function MonitorAMongo(request $request)
     {
         $monitor = Monitor::find($request->idMonitor);
+        $sensores = new Monitor();
+        $sensoresMonitor = $sensores->SensoresMonitor();
         $sendToMongoController = new SendToMongoDataController();
         $sendToMongoController->sendMonitorToMongo(new Request([
             'id' => $monitor->id,
