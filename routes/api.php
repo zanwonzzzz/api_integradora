@@ -157,5 +157,5 @@ Route::get('/cronjobs2', [CronJobController::class, 'CronJobParaDatosNuevos'])->
 Route::get('/sensorsitos/{id}',[AdafruitController::class,'BorrarSensores'])->middleware('auth.jwt');
 
 //DATA SENSORES 
-Route::get('/sensor-data/{id}', [SensorDataController::class, 'index']);
+Route::get('/sensor-data/{id}', [SensorDataController::class, 'index'])->middleware('auth.jwt');
 Route::post('/sensor-data', [SensorDataController::class, 'store']);
