@@ -211,6 +211,12 @@ class MonitorController extends Controller
     public function MonitorAMongo(request $request)
     {
         $monitor = Monitor::find($request->idMonitor);
+        $sendToMongoController = new SendToMongoDataController();
+        $sendToMongoController->sendMonitorToMongo(new Request([
+            'id' => $monitor->id,
+            'user_id' => $monitor->user_id,
+            'Nombre_Monitor' => $monitor->Nombre_Monitor
+        ]));
 
     }
 

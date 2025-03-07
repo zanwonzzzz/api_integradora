@@ -40,4 +40,22 @@ class AdminController extends Controller
 
     }
     //datos de los monitores del usuario
+
+    public function UsuariosTodos()
+    {
+        $usuarios = User::All();
+        return response()->json($usuarios,200);
+    }
+
+    public function UsuariosActivos()
+    {
+        $usuarios = User::where('cuenta_activa', 1)->get();
+        return response()->json($usuarios, 200);
+    }
+
+    public function UsuariosInactivos()
+    {
+        $usuarios = User::where('cuenta_activa', 1)->get();
+        return response()->json($usuarios, 200);
+    }
 }

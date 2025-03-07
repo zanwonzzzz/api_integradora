@@ -13,6 +13,7 @@ use App\Http\Controllers\ImagenController;
 use App\Http\Controllers\CronJobController; 
 use App\Http\Controllers\SensorDataController;
 use App\Http\Controllers\SendToMongoDataController;
+use App\Http\Controllers\AdminController;
 
 /*
 |--------------------------------------------------------------------------
@@ -159,3 +160,11 @@ Route::get('/sensorsitos/{id}',[AdafruitController::class,'BorrarSensores'])->mi
 //DATA SENSORES 
 Route::get('/sensor-data/{id}', [SensorDataController::class, 'index']);
 Route::post('/sensor-data', [SensorDataController::class, 'store']);
+
+
+
+
+//CONSULTAS DEL ADMIN
+Route::get('/todos', [AdminController::class, 'UsuariosTodos'])->middleware('auth.jwt');
+Route::get('/activos', [AdminController::class, 'UsuariosActivos'])->middleware('auth.jwt');
+Route::get('/inactivos', [AdminController::class, 'UsuariosInactivos'])->middleware('auth.jwt');
