@@ -18,7 +18,7 @@ class AdminController extends Controller
         {
             return response()->json('Ese usuario no existe',422);
         }
-        if($user->role_id == 2){
+        if($user->rol_id == 3){
             return response()->json(['msg' => 'No se puede desactivar a un admin'], 403);
         }
 
@@ -26,6 +26,25 @@ class AdminController extends Controller
         $user->save();
 
         return response()->json(['message' => 'EL admin ha desactivado la Cuenta del usuario '.$user->name],200);
+    }
+
+    public function ActivarCuenta(int $id = 0)
+    {
+
+        $user = User::where('id',$id)->first();
+        //dd($user);
+        if(!$user)
+        {
+            return response()->json('Ese usuario no existe',422);
+        }
+        if($user->rol_id == 3){
+            return response()->json(['msg' => 'No se puede activar a un admin'], 403);
+        }
+
+        $user->cuenta_activa = true;
+        $user->save();
+
+        return response()->json(['message' => 'EL admin ha activado la Cuenta del usuario '.$user->name],200);
     }
 
     //consultas del admin 
@@ -40,4 +59,22 @@ class AdminController extends Controller
 
     }
     //datos de los monitores del usuario
+
+    public function UsuariosTodos()
+    {
+        $usuarios = User::All();
+        return response()->json($usuarios,200);
+    }
+
+    public function UsuariosActivos()
+    {
+        $usuarios = User::where('cuenta_activa', 1)->get();
+        return response()->json($usuarios, 200);
+    }
+
+    public function UsuariosInactivos()
+    {
+        $usuarios = User::where('cuenta_activa', 1)->get();
+        return response()->json($usuarios, 200);
+    }
 }

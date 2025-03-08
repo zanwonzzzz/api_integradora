@@ -8,8 +8,10 @@ use App\Models\Sensor;
 use App\Models\MonitorSensor;
 use App\Http\Controllers\AdafruitController;
 use App\Models\User;
+use App\Models\MonitorMongo;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Validator;
+use Carbon\Carbon;
 
 class MonitorController extends Controller
 {
@@ -54,7 +56,7 @@ class MonitorController extends Controller
 
     //monitores que tiene un usuario
     public function monitor_usuario(){
-        $id =1;
+        $id =auth()->user()->id;
         $monitores = Monitor::where('user_id', $id)->get();
         return response()->json($monitores, 200);
     }
@@ -205,6 +207,30 @@ class MonitorController extends Controller
         
         return response()->json($sensores,200);
         
+    }
+
+
+    public function MonitorAMongo(request $request)
+    {
+
+        $sensoresTodos = [];
+        $monitor = Monitor::find($request->id_monitor);
+        
+        $sensores = new MonitorController();
+        $sensoresMonitor = $sensores->SensoresMonitor($monitor->id)->getData();
+        //dd($sensoresMonitor);
+        foreach($sensoresMonitor as $data)
+        {
+           $sensoresTodos[] = $data->id;
+        }
+        //dd($sensoresTodos);
+        $sendToMongoController = new SendToMongoDataController();
+        $sendToMongoController->sendDatosMonitorToMongo(new Request([
+            'id_monitor' => $monitor->id,
+            'sensor' => $sensoresTodos,
+            'Fecha' => Carbon::now()->toDateTimeString(),
+        ]));
+
     }
 
     

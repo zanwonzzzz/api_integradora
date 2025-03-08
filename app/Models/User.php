@@ -62,7 +62,7 @@ class User extends Authenticatable implements JWTSubject
      */
     public function getJWTCustomClaims()    //este metodo permite que otras cosas deseamos agregar en el token JWT
     {
-        return [];
+        return ['rol' => $this->rol_id ];
     }
 
     public function token(){

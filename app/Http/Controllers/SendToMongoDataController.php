@@ -8,6 +8,7 @@ use App\Models\SensorMongo;
 use App\Models\MonitorMongo;
 use App\Models\MonitorSensorMongo;
 use App\Models\UserMongo;
+use App\Models\DatosMonitor;
 
 class SendToMongoDataController extends Controller
 {
@@ -51,5 +52,16 @@ class SendToMongoDataController extends Controller
         $data->save();
 
         return null;
+    }
+
+    public function sendDatosMonitorToMongo(Request $request)
+    {
+        $data = new DatosMonitor();
+        $data->id_monitor = $request->id_monitor;
+        $data->sensor = $request->sensor;
+        $data->Fecha = $request->Fecha;
+        $data->save();
+
+        return "ola";
     }
 }
