@@ -57,7 +57,7 @@ Route::delete('/sensor/eliminar/{id}',[SensorController::class,'eliminarsensor']
 Route::post('/monitor',[MonitorController::class,'crearm_s'])->middleware('auth.jwt');
 Route::get('/monitores',[MonitorController::class,'monitor_usuario'])->middleware('auth.jwt');
 Route::delete('/monitor/{id}',[MonitorController::class,'borrarmonitor'])->middleware('auth.jwt');
-
+Route::put('/monitor/{idmonitor}',[MonitorController::class,'actualizarmonitor'])->middleware('auth.jwt');
 //MONITORES Y SUS SENSORES
 
 Route::get('/sensor/{idmonitor}/{id}',[MonitorController::class,'elegir_sensores'])->middleware('auth.jwt'); //EN REPARACION
@@ -172,3 +172,6 @@ Route::get('/activos', [AdminController::class, 'UsuariosActivos'])->middleware(
 Route::get('/inactivos', [AdminController::class, 'UsuariosInactivos'])->middleware('auth.jwt');
 Route::get('/desactivar/{id}', [AdminController::class, 'DesactivarCuenta'])->middleware('auth.jwt');
 Route::get('/activar/{id}', [AdminController::class, 'ActivarCuenta'])->middleware('auth.jwt');
+Route::get('/monitores/eliminados', [AdminController::class, 'MonitoresEliminados'])->middleware('auth.jwt');
+Route::get('/monitores/activos', [AdminController::class, 'MonitoresActivos'])->middleware('auth.jwt');
+Route::get('/monitores/menos/activos/', [AdminController::class, 'MonitoresMenosActivos'])->middleware('auth.jwt');

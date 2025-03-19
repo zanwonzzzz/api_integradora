@@ -62,6 +62,32 @@ class MonitorController extends Controller
         return response()->json($monitores, 200);
     }
 
+     //actualizar monitor
+     public function actualizarmonitor(int $idmonitor= 0,Request $request,int $idsensor=0)
+     {
+        $validator = Validator::make($request->all(), [
+            'nombre' => 'required|string',
+            'ubicacion' => 'required|string'
+        ]);
+         if($validator->fails()){
+            return response()->json($validator->errors(),422);
+        } 
+
+        $monitor = Monitor::find($idmonitor);
+        if(!$monitor)
+        {
+            return response()->json('Monitor no encontrado',404);
+        }
+
+        $monitor->Nombre_Monitor = $request->nombre;
+        $monitor->Ubicacion = $request->ubicacion;
+        $monitor->save();
+
+        return response()->json("Monitor Actualizado",200);
+
+
+     }
+
     //borrar monitor
     public function borrarmonitor(int $id=0){
         if ($id != 0) {
@@ -171,7 +197,7 @@ class MonitorController extends Controller
     
         
         $sensoresActualizados = $adafruitController->AdafruitSensor();
-
+/* 
     
      if (empty($sensoresActualizados)) {
         $value = 'logout'; 
@@ -190,7 +216,9 @@ class MonitorController extends Controller
         'value' => $value,
      ]);
 
+ */
 
+        return response()->json('Sensor Eliminado');
     
         
     } 
@@ -216,6 +244,11 @@ class MonitorController extends Controller
 
         $sensoresTodos = [];
         $monitor = Monitor::find($request->id_monitor);
+        if(!$monitor){
+            return response()->json("No se encuentra ese monitor",404);
+        }
+        $monitor->Activo++;
+        $monitor->save();
         
         $sensores = new MonitorController();
         $sensoresMonitor = $sensores->SensoresMonitor($monitor->id)->getData();
@@ -231,6 +264,10 @@ class MonitorController extends Controller
             'sensor' => $sensoresTodos,
             'Fecha' => Carbon::now()->toDateTimeString(),
         ]));
+        
+
+
+        return response()->json("Datos del monitor a mongo");
 
     }
 

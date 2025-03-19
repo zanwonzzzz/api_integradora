@@ -18,6 +18,7 @@ return new class extends Migration
             $table->unsignedBigInteger('user_id');
             $table->string('Nombre_Monitor');
             $table->string('Ubicacion');
+            $table->integer('Activo')->default(0);
             $table->softDeletes();
             $table->timestamps();
 

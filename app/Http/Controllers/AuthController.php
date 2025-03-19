@@ -56,8 +56,7 @@ class AuthController extends Controller
            
            
             return response()->json([
-                'token' => $token,
-                'rol' => $user->rol_id
+                'token' => $token
                // 'oswi_token' => $atoken,
             ]);
         }
