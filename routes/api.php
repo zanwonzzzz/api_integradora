@@ -14,7 +14,6 @@ use App\Http\Controllers\CronJobController;
 use App\Http\Controllers\SensorDataController;
 use App\Http\Controllers\SendToMongoDataController;
 use App\Http\Controllers\AdminController;
-
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -141,7 +140,7 @@ Route::get('/hora/{idsensor}/{fechalimite}', [AdafruitController::class, 'promed
 
 
 
-
+// Route::post('/prueba', [gaelcontroller::class, 'obtenerdatosporrequest']);
 
 
 
