@@ -146,8 +146,10 @@ class AuthController extends Controller
             'rol_id'=>'nullable|number'
         ]);
 
-        if($validator->fails()){
-            return response()->json($validator->errors()->toJson(),422);
+        if ($validator->fails()) {
+            return response()->json([
+                'error' => $validator->errors()->first() 
+            ], 422);
         }
 
         $user = User::create(array_merge(
