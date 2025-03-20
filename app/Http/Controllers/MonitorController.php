@@ -62,6 +62,14 @@ class MonitorController extends Controller
         return response()->json($monitores, 200);
     }
 
+    //buscar por id monitor
+    public function monitorPorId(int $idmonitor = 0){
+        
+        $monitor = Monitor::find($idmonitor);
+        return response()->json($monitor, 200);
+    }
+
+
      //actualizar monitor
      public function actualizarmonitor(int $idmonitor= 0,Request $request,int $idsensor=0)
      {
