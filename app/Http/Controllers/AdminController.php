@@ -82,7 +82,8 @@ class AdminController extends Controller
     // Historial de monitores: mostrar los monitores que han dado de baja los usuarios. (ultima semana)
     public function MonitoresEliminados()
     {
-        $monitoresBorrados = Monitor::onlyTrashed()->get();
+        $id = auth()->user()->id;
+        $monitoresBorrados = Monitor::onlyTrashed()->where('user_id', $id)->get();
         return response()->json($monitoresBorrados,200);
 
     }
