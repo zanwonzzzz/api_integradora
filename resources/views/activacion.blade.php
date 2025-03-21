@@ -10,7 +10,7 @@
         <h1 style="font-size: 24px; text-align: center; color: #84b6f4;">¡Bienvenido!</h1>
         <p style="font-size: 16px; line-height: 1.5; text-align: center;">
             Hola <strong>{{$user}}</strong>,<br>
-            Gracias por registrarte. Para activar tu cuenta, por favor haz clic en el siguiente enlace:
+            Gracias por registrarte. Para activar tu cuenta, ingresa este codigo {{$codigo}} en el siguiente enlace
         </p>
         <div style="text-align: center; margin: 20px 0;">
             <a href="{{ $url }}" style="display: inline-block; background-color: #84b6f4; color: #ffffff; text-decoration: none; padding: 10px 20px; border-radius: 5px; font-size: 16px;">

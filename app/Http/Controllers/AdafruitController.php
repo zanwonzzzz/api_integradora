@@ -14,7 +14,10 @@ use Illuminate\Support\Facades\Validator;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Log;
 use App\Models\Estado;
+use App\Models\DatosMonitor;
+use App\Models\SensorData;
 use Illuminate\Support\Facades\DB;
+
 class AdafruitController extends Controller
 {
     public function obtener(int $id =0){
@@ -1050,6 +1053,7 @@ class AdafruitController extends Controller
             /* $fechafinal = $fechalimite; */
             $fechalimite =Carbon::parse($fechalimite)->startOfDay()->utc();
             $fechafinal =Carbon::parse($fechalimite)->endOfDay()->utc();
+            
 
            /*  dd($fechalimite,$fechafinal); */
 
@@ -1080,6 +1084,7 @@ class AdafruitController extends Controller
     
            foreach ($data as $res) {
             $fecha = Carbon::parse($res->created_at)->utc();
+            //dump($fecha);
     
             if ($fecha->isSameDay($fechalimite)) {
                 $mismosdias[] = [
@@ -1145,6 +1150,230 @@ class AdafruitController extends Controller
 
     }
 
+
+
+    //PROMEDIO DE 5 DIAS ATRAS CON MONGO
+    public function PromedioPorDiaMongo(int $idmonitor=0,int $idsensor=0)
+    {
+        
+        $sensores = [
+            1 => "GAS".$idmonitor,
+            2 => "TEM".$idmonitor,
+            3 => "PIR".$idmonitor,
+            4 => "SON".$idmonitor,
+            5 => "LUZ".$idmonitor,
+        ];
+
+        
+        //dd($sensor);
+        $estado = "";
+        $idestado = 0;
+        $movimientosmuchos = 0;
+        $ada = new AdafruitController();
+        $sensor = $sensores[$idsensor];
+        //dd($sensor);
+        $dias = 6;
+
+        for($i=1; $i < $dias; $i++){
+           
+    
+           
+            $contador = $i * 1;
+            $fechalimite = Carbon::now()->subDays($contador)->startOfDay()->toDateTimeString();
+            $fechafinal =Carbon::now()->subDays($contador)->endOfDay()->toDateTimeString();
+            //dd($fechalimite,$fechafinal);
+    
+            if(in_array($sensor, $sensores))
+            {
+                if($sensor == "PIR".$idmonitor)
+                {
+                    $datos = SensorData::where('id_monitor',$idmonitor)
+                    ->where($sensor,1)
+                    ->whereBetween('Fecha',[$fechalimite,$fechafinal])
+                    ->get([$sensor])
+                    ->toArray();
+                }
+                else
+                {
+
+                $datos = SensorData::where('id_monitor',$idmonitor)
+                ->whereBetween('Fecha',[$fechalimite,$fechafinal])
+                ->get([$sensor])
+                ->toArray();
+                }
+
+                //$ola=$datos;
+            }
+
+            if(!empty($datos))
+            {
+                if($sensor == "PIR".$idmonitor)
+                {
+                    $movimientosmuchos = count($datos);
+                    
+                    if($movimientosmuchos >= 100){
+                        $estado = "Mucho Movimiento";
+                        $idestado = 1;
+                        
+                    }
+                    else if($movimientosmuchos >= 40 && $movimientosmuchos < 100){
+                        $estado = "Algo de Movimiento";
+                        $idestado = 2;
+                    }
+                    else if($movimientosmuchos >= 0 && $movimientosmuchos < 40){
+                        $estado = "Poco Movimiento";
+                        $idestado = 3;
+
+                    }
+            
+                
+                }
+                else
+                {
+
+                    $valores = array_column($datos, $sensor);
+                    //dd($valores);
+                    $promedio = array_sum($valores) / count($valores);
+
+                    
+                    if($sensor == "GAS".$idmonitor){
+                        $result = $ada->GasComparacion($promedio,$estado,$idestado);
+                    }
+                    else if($sensor == "TEM".$idmonitor){
+                        $result = $ada->TemperaturaComparacion($promedio,$estado,$idestado);
+                    }
+                    else if($sensor == "SON".$idmonitor){
+                        $result = $ada->SonidoComparacion($promedio,$estado,$idestado);
+                    }
+                    else if($sensor == "LUZ".$idmonitor){
+                        $result = $ada->LuzComparacion($promedio,$estado,$idestado);
+                    }
+        
+                
+                    $estado = $result['estado'];
+                    $idestado = $result['idestado'];
+                }    
+
+                   
+            }
+            else{
+                $promedio = 0;
+            }
+
+            if ($sensor == "PIR".$idmonitor) {
+                $resultados[] = [
+                    "fecha" => $fechalimite,
+                    "promedio" => $movimientosmuchos,
+                    "estado" => $estado,
+                    "idestado" => $idestado
+                ];
+    
+            } else {
+                $resultados[] = [
+                    "fecha" => $fechalimite,
+                    "promedio" => round($promedio),
+                    "estado" => $estado,
+                    "idestado" => $idestado
+                ];
+            }
+            
+        }
+
+        return response()->json($resultados);
+
+    }
+
+
+    //PROMEDIO POR HORA EN MONGO
+    public function PromedioPorHoraMongo(int $idmonitor=0,int $idsensor=0,$fechalimite="")
+    {
+        $sensores = [
+            1 => "GAS".$idmonitor,
+            2 => "TEM".$idmonitor,
+            3 => "PIR".$idmonitor,
+            4 => "SON".$idmonitor,
+            5 => "LUZ".$idmonitor,
+        ];
+
+        $sensor = $sensores[$idsensor];
+
+        $fechalimite = Carbon::parse($fechalimite)->startOfDay()->toDateTimeString();
+        
+        $fechafinal =Carbon::parse($fechalimite)->endOfDay()->toDateTimeString();
+        //dd($fechalimite,$fechafinal);
+
+        $mismosdias= [];
+        $mismashoras= [];
+        $promediosPorHora = [];
+
+        $datos = SensorData::where('id_monitor',$idmonitor)
+        ->whereBetween('Fecha',[$fechalimite,$fechafinal])
+        ->get([$sensor,'Fecha'])
+        ->toArray();
+
+        //dd($datos);
+
+        if(!empty($datos))
+        {
+
+        
+
+            foreach ($datos as $res) {
+                //dd($datos);
+                //dd($res[$sensor]);
+                $fecha =Carbon::parse($res["Fecha"]);
+                //dd($fecha);
+                /* $fechaCarbon = Carbon::parse($fecha);
+                dd($fechaCarbon); */
+        
+                //dd($fecha);
+                if ($fecha->isSameDay($fechalimite)) {
+                    
+                    $mismosdias[] = [
+                        "fecha" => $fecha->toDateTimeString(),
+                        "valor" => $res[$sensor], 
+                    ];
+                }
+            }
+
+            
+
+            for ($hora = 0; $hora < 24; $hora++) {
+                $totalValores = 0;
+                $cantidadValores = 0;
+
+                foreach ($mismosdias as $item) {
+                   $fechita =  Carbon::parse($item["fecha"]);
+                    $horaItem = $fechita->hour; 
+                    if ($horaItem === $hora) {
+                        $totalValores += $item['valor'];
+                        $cantidadValores++;
+                    }
+                }
+
+                
+                $promediosPorHora[$hora] = $cantidadValores > 0 ? round($totalValores / $cantidadValores, 2) : 0;
+
+            }
+        }
+        else 
+        {
+          $datos = 0;
+        }
+
+        $resultados[] = [
+            "fecha" => $fechalimite,
+            "promedios_por_hora" => $promediosPorHora,
+        ];
+
+        return response()->json([
+            'resultados' => $resultados
+        ]);
+
+
+
+
+    }
    }
 
 

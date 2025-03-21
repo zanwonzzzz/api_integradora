@@ -45,7 +45,11 @@ Route::group([
 
 
 //CONTROL DE ACTIVACION DE LA CUENTA POR CORREO
-Route::get('control/{id}', [controlcontroller::class, 'index'])->name('activacion')->middleware('signed');
+//Route::get('control/{id}', [controlcontroller::class, 'index'])->name('activacion')->middleware('signed');
+
+//ACTIVACION DE LA CUENTA POR CODIGO
+Route::post('/verificar/{id}', [controlcontroller::class, 'CodigoVerificacion'])->name('verificar');
+Route::get('/activacion/{id}', [controlcontroller::class, 'VistaVerificacion'])->name('activacion')->middleware('signed');
 
 //SENSORES 
 Route::post('/sensor/agregar',[SensorController::class,'agregarsensor'])->middleware('auth.jwt');
@@ -175,3 +179,8 @@ Route::get('/activar/{id}', [AdminController::class, 'ActivarCuenta'])->middlewa
 Route::get('/monitores/eliminados', [AdminController::class, 'MonitoresEliminados'])->middleware('auth.jwt');
 Route::get('/monitores/activos', [AdminController::class, 'MonitoresActivos'])->middleware('auth.jwt');
 Route::get('/monitores/menos/activos/', [AdminController::class, 'MonitoresMenosActivos'])->middleware('auth.jwt');
+
+//REPORTES CON MONGO
+Route::get('/promedio-mongo/{idmonitor}/{idsensor}/', [AdafruitController::class, 'PromedioPorDiaMongo'])->middleware('auth.jwt');
+Route::get('/promedio-hora/{idmonitor}/{idsensor}/{fechalimite}', [AdafruitController::class, 'PromedioPorHoraMongo'])->middleware('auth.jwt');
+

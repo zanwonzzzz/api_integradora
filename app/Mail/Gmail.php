@@ -17,15 +17,17 @@ class Gmail extends Mailable
 
     protected User $user;
     protected string $url;
+    protected int $codigo;
     /**
      * Create a new message instance.
      *
      * @return void
      */
-    public function __construct(User $user,string $url)
+    public function __construct(User $user,string $url,int $codigo)
     {
         $this->user = $user;
         $this->url = $url;
+        $this->codigo = $codigo;
     }
 
     /**
@@ -36,7 +38,7 @@ class Gmail extends Mailable
     public function envelope()
     {
         return new Envelope(
-            subject: 'Gmail',
+            subject: 'Codigo Activacion',
         );
     }
 
@@ -51,6 +53,7 @@ class Gmail extends Mailable
             view: 'activacion',
             with: ['user' => $this->user->name,
                    'url' => $this->url,
+                   'codigo' => $this->codigo
                    ]
         );
     }

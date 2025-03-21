@@ -21,6 +21,8 @@ return new class extends Migration
             $table->string('password');
             $table->unsignedBigInteger('rol_id')->default(2);
             $table->boolean('cuenta_activa')->default(false);
+            $table->boolean('cuenta_activa_Admin')->nullable();
+            $table->integer('codigo')->nullable();
             $table->text('fotoperfil')->nullable();
             $table->string('mime_type')->nullable();
             $table->boolean('monitor')->default(false)->nullable();
@@ -39,6 +41,7 @@ return new class extends Migration
             'password' => bcrypt('12345678'),
             'rol_id' => 3,
             'cuenta_activa' => true,
+            'cuenta_activa_Admin' => true,
         ]);
     }
 
