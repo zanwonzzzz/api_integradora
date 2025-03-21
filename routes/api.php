@@ -47,7 +47,11 @@ Route::group([
 
 
 //CONTROL DE ACTIVACION DE LA CUENTA POR CORREO
-Route::get('control/{id}', [controlcontroller::class, 'index'])->name('activacion')->middleware('signed');
+//Route::get('control/{id}', [controlcontroller::class, 'index'])->name('activacion')->middleware('signed');
+
+//ACTIVACION DE LA CUENTA POR CODIGO
+Route::post('/verificar/{id}', [controlcontroller::class, 'CodigoVerificacion'])->name('verificar');
+Route::get('/activacion/{id}', [controlcontroller::class, 'VistaVerificacion'])->name('activacion')->middleware('signed');
 
 //SENSORES 
 Route::post('/sensor/agregar',[SensorController::class,'agregarsensor'])->middleware('auth.jwt');
@@ -57,8 +61,9 @@ Route::delete('/sensor/eliminar/{id}',[SensorController::class,'eliminarsensor']
 //MONITORES
 Route::post('/monitor',[MonitorController::class,'crearm_s'])->middleware('auth.jwt');
 Route::get('/monitores',[MonitorController::class,'monitor_usuario'])->middleware('auth.jwt');
+Route::get('/monitores/{idmonitor}',[MonitorController::class,'monitorPorId'])->middleware('auth.jwt');
 Route::delete('/monitor/{id}',[MonitorController::class,'borrarmonitor'])->middleware('auth.jwt');
-
+Route::put('/monitor/{idmonitor}',[MonitorController::class,'actualizarmonitor'])->middleware('auth.jwt');
 //MONITORES Y SUS SENSORES
 
 Route::get('/sensor/{idmonitor}/{id}',[MonitorController::class,'elegir_sensores'])->middleware('auth.jwt'); //EN REPARACION
@@ -175,3 +180,11 @@ Route::get('/desactivar/{id}', [AdminController::class, 'DesactivarCuenta'])->mi
 Route::get('/activar/{id}', [AdminController::class, 'ActivarCuenta'])->middleware('auth.jwt');
 
 Route::post('/data-sensor', [SensorDataController::class, 'obtenerDataSensor']);
+Route::get('/monitores/eliminados', [AdminController::class, 'MonitoresEliminados'])->middleware('auth.jwt');
+Route::get('/monitores/activos', [AdminController::class, 'MonitoresActivos'])->middleware('auth.jwt');
+Route::get('/monitores/menos/activos/', [AdminController::class, 'MonitoresMenosActivos'])->middleware('auth.jwt');
+
+//REPORTES CON MONGO
+Route::get('/promedio-mongo/{idmonitor}/{idsensor}/', [AdafruitController::class, 'PromedioPorDiaMongo'])->middleware('auth.jwt');
+Route::get('/promedio-hora/{idmonitor}/{idsensor}/{fechalimite}', [AdafruitController::class, 'PromedioPorHoraMongo'])->middleware('auth.jwt');
+

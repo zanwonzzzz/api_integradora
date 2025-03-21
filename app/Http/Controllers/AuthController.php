@@ -44,7 +44,7 @@ class AuthController extends Controller
         
         
 
-        if ($user->cuenta_activa == 0 ) {
+        if ($user->cuenta_activa == 0 && $user->cuenta_activa_Admin == 0) {
             return response()->json(['error' => 'Cuenta no activada.'], 403);
         } else {
 
@@ -56,8 +56,7 @@ class AuthController extends Controller
            
            
             return response()->json([
-                'token' => $token,
-                'rol' => $user->rol_id
+                'token' => $token
                // 'oswi_token' => $atoken,
             ]);
         }
@@ -147,8 +146,10 @@ class AuthController extends Controller
             'rol_id'=>'nullable|number'
         ]);
 
-        if($validator->fails()){
-            return response()->json($validator->errors()->toJson(),422);
+        if ($validator->fails()) {
+            return response()->json([
+                'error' => $validator->errors()->first() 
+            ], 422);
         }
 
         $user = User::create(array_merge(
@@ -162,8 +163,16 @@ class AuthController extends Controller
             'password' => $credentials['password'],
           ]);*/
 
-        //   $url= URL::temporarySignedRoute('activacion', now()->addMinutes(5), ['id' => $user->id]);
-        // Mail::to($user->email)->send(new Gmail($user,$url));
+        $codigo = mt_rand(100000, 999999);
+        $url= URL::temporarySignedRoute('activacion', now()->addMinutes(5), ['id' => $user->id]);
+        Mail::to($user->email)->send(new Gmail($user,$url,$codigo));
+
+        DB::table('users')->updateOrInsert(
+            ['id' => $user->id],
+            [
+                'codigo' => $codigo
+            ]
+        );
 
         $sendToMongoController = new SendToMongoDataController();
         $sendToMongoController->sendUserToMongo(new Request([

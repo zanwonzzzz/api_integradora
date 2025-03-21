@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
+use App\Models\Monitor;
 
 class AdminController extends Controller
 {
@@ -76,5 +77,28 @@ class AdminController extends Controller
     {
         $usuarios = User::where('cuenta_activa', 1)->get();
         return response()->json($usuarios, 200);
+    }
+
+    // Historial de monitores: mostrar los monitores que han dado de baja los usuarios. (ultima semana)
+    public function MonitoresEliminados()
+    {
+        $id = auth()->user()->id;
+        $monitoresBorrados = Monitor::onlyTrashed()->where('user_id', $id)->get();
+        return response()->json($monitoresBorrados,200);
+
+    }
+
+    //Historial de monitores con más actividad semanal
+    public function MonitoresActivos()
+    {
+        $monitores = Monitor::where('Activo','>=',3)->get();
+        return response()->json($monitores,200);
+    }
+
+    //Historial de monitores con menos actividad semanal
+    public function MonitoresMenosActivos()
+    {
+        $monitores = Monitor::where('Activo','<=',2)->get();
+        return response()->json($monitores,200);
     }
 }
