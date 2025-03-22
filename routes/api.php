@@ -14,6 +14,8 @@ use App\Http\Controllers\CronJobController;
 use App\Http\Controllers\SensorDataController;
 use App\Http\Controllers\SendToMongoDataController;
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\gaelcontroller;
+
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -187,6 +189,8 @@ Route::get('/activos', [AdminController::class, 'UsuariosActivos'])->middleware(
 Route::get('/inactivos', [AdminController::class, 'UsuariosInactivos'])->middleware('auth.jwt');
 Route::get('/desactivar/{id}', [AdminController::class, 'DesactivarCuenta'])->middleware('auth.jwt');
 Route::get('/activar/{id}', [AdminController::class, 'ActivarCuenta'])->middleware('auth.jwt');
+
+Route::post('/data-sensor', [SensorDataController::class, 'obtenerDataSensor']);
 Route::get('/monitores/eliminados', [AdminController::class, 'MonitoresEliminados'])->middleware('auth.jwt');
 Route::get('/monitores/activos', [AdminController::class, 'MonitoresActivos'])->middleware('auth.jwt');
 Route::get('/monitores/menos/activos/', [AdminController::class, 'MonitoresMenosActivos'])->middleware('auth.jwt');
