@@ -188,3 +188,4 @@ Route::get('/monitores/menos/activos/', [AdminController::class, 'MonitoresMenos
 Route::get('/promedio-mongo/{idmonitor}/{idsensor}/', [AdafruitController::class, 'PromedioPorDiaMongo'])->middleware('auth.jwt');
 Route::get('/promedio-hora/{idmonitor}/{idsensor}/{fechalimite}', [AdafruitController::class, 'PromedioPorHoraMongo'])->middleware('auth.jwt');
 
+Route::post('/prueba', [gaelcontroller::class, 'obtenerdatosporrequest']);
