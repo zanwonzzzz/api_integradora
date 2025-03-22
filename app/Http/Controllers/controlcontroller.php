@@ -9,6 +9,9 @@ use Illuminate\Support\Facades\Mail;
 use App\Mail\Gmail;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Password;
+use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Hash;
 
 class controlcontroller extends Controller
 {
@@ -87,4 +90,49 @@ class controlcontroller extends Controller
             ]); 
         }
    }
+
+
+   //RECUPERAR CONTRASEÑA
+   public function OlvidarContraseña(Request $request)
+   {
+        $request->validate(['email' => 'required|email']);
+    
+        $status = Password::sendResetLink(
+            $request->only('email')
+        );
+       
+        if ($status === Password::RESET_LINK_SENT) {
+            return response()->json([
+                'message' => 'Correo de recuperación enviado correctamente.',
+            ], 200);
+        } else {
+            return response()->json([
+                'message' => 'No se pudo enviar el correo. Verifica el correo proporcionado.',
+            ], 400);
+        }
+   }
+
+   public function ResetarContraseña(Request $request)
+   {
+        $request->validate([
+            'token' => 'required',
+            'email' => 'required|email',
+            'password' => 'required|min:8|confirmed',
+        ]);
+    
+        $status = Password::reset(
+            $request->only('email', 'password', 'password_confirmation', 'token'),
+            function ($user, $password) {
+                $user->forceFill([
+                    'password' => Hash::make($password)
+                ])->setRememberToken(Str::random(60));
+    
+                $user->save();
+            }
+        );
+
+        return response()->view('ExitoContrasena');
+
+   }
+
 }

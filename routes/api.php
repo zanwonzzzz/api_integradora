@@ -53,6 +53,17 @@ Route::group([
 Route::post('/verificar/{id}', [controlcontroller::class, 'CodigoVerificacion'])->name('verificar');
 Route::get('/activacion/{id}', [controlcontroller::class, 'VistaVerificacion'])->name('activacion')->middleware('signed');
 
+//Olvidar Contraseña
+Route::post('/forgot-password', [controlcontroller::class, 'OlvidarContraseña']);
+
+//VistaResetear Contraseña
+Route::get('/reset-password/{token}', function ($token) {
+    return view('ResetearContraseña', ['token' => $token]);
+})->name('password.reset')->middleware('signed');
+
+//RESETEAR CONTRASEÑA
+Route::post('/reset-password', [controlcontroller::class, 'ResetarContraseña'])->name('password.update');
+
 //SENSORES 
 Route::post('/sensor/agregar',[SensorController::class,'agregarsensor'])->middleware('auth.jwt');
 Route::get('/sensores',[SensorController::class,'obtenersensores'])->middleware('auth.jwt');
