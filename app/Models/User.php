@@ -11,11 +11,16 @@ use Tymon\JWTAuth\Contracts\JWTSubject;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use App\Notifications\NotificacionReseteoContraseña;
 use Illuminate\Support\Facades\URL;
+use Jenssegers\Mongodb\Eloquent\HybridRelations;
 
 
 class User extends Authenticatable implements JWTSubject
 {
-    use HasApiTokens, HasFactory, Notifiable, SoftDeletes;
+    use HasApiTokens, HasFactory, Notifiable, SoftDeletes,HybridRelations;
+
+    protected $connection = 'mysql';
+
+    protected $table = 'users';
 
     /**
      * The attributes that are mass assignable.
@@ -87,5 +92,10 @@ class User extends Authenticatable implements JWTSubject
             'email' => $this->email,]);
 
         $this->notify((new NotificacionReseteoContraseña($url)));
+    }
+
+    public function auditorias()
+    {
+        return $this->hasMany(Auditoria::class);
     }
 }

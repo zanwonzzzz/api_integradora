@@ -9,6 +9,7 @@ use App\Models\MonitorMongo;
 use App\Models\MonitorSensorMongo;
 use App\Models\UserMongo;
 use App\Models\DatosMonitor;
+use App\Models\Auditoria;
 
 class SendToMongoDataController extends Controller
 {
@@ -57,11 +58,30 @@ class SendToMongoDataController extends Controller
     public function sendDatosMonitorToMongo(Request $request)
     {
         $data = new DatosMonitor();
+        $data->user_id = $request->user_id;
         $data->id_monitor = $request->id_monitor;
         $data->sensor = $request->sensor;
         $data->Fecha = $request->Fecha;
         $data->save();
 
         return "ola";
+    }
+
+    public function Auditorias(Request $request)
+    {
+        $user_id = auth()->user()->id;
+        $data = new Auditoria();
+        $data->user_id = $user_id;
+        $data->save();
+
+        return "ola";
+    }
+
+
+    public function ConsultaAuditorias(Request $request)
+    {
+        $data = Auditoria::with('users')->get();
+
+        return response()->json($data);
     }
 }

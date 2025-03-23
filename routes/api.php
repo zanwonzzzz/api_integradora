@@ -179,8 +179,10 @@ Route::get('/sensor-data/{id}', [SensorDataController::class, 'index'])->middlew
 Route::post('/sensor-data', [SensorDataController::class, 'store']);
 
 //DATOS DEL MONITOR A MONGO
-Route::post('/datos-mongo',[MonitorController::class,'MonitorAMongo']);
+Route::post('/datos-mongo',[MonitorController::class,'MonitorAMongo'])->middleware('auth.jwt');
 
+Route::post('/auditoria',[SendToMongoDataController::class,'Auditorias'])->middleware('auth.jwt');
+Route::get('/auditoria',[SendToMongoDataController::class,'ConsultaAuditorias'])->middleware('auth.jwt');
 
 
 //CONSULTAS DEL ADMIN
