@@ -9,11 +9,18 @@ use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use Tymon\JWTAuth\Contracts\JWTSubject;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use App\Notifications\NotificacionReseteoContraseña;
+use Illuminate\Support\Facades\URL;
+use Jenssegers\Mongodb\Eloquent\HybridRelations;
 
 
 class User extends Authenticatable implements JWTSubject
 {
-    use HasApiTokens, HasFactory, Notifiable, SoftDeletes;
+    use HasApiTokens, HasFactory, Notifiable, SoftDeletes,HybridRelations;
+
+    protected $connection = 'mysql';
+
+    protected $table = 'users';
 
     /**
      * The attributes that are mass assignable.
@@ -26,6 +33,7 @@ class User extends Authenticatable implements JWTSubject
         'password',
         'rol_id',
         'cuenta_activa',
+        'cuenta_activa_Admin',
         'fotoperfil',
         'mime_type',
         'monitor',
@@ -71,5 +79,23 @@ class User extends Authenticatable implements JWTSubject
 
     public function monitor (){
         return $this->hasMany(Monitor::class);
+    }
+
+    public function sendPasswordResetNotification($token)
+    {
+       /*  $url = url(route('password.reset', [
+            'token' => $token,
+            'email' => $this->email,
+        ], false));
+ */
+        $url= URL::temporarySignedRoute('password.reset', now()->addMinutes(3), ['token' => $token,
+            'email' => $this->email,]);
+
+        $this->notify((new NotificacionReseteoContraseña($url)));
+    }
+
+    public function auditorias()
+    {
+        return $this->hasMany(Auditoria::class);
     }
 }

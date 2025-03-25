@@ -251,6 +251,7 @@ class MonitorController extends Controller
     {
 
         $sensoresTodos = [];
+        $user_id = auth()->user()->id;
         $monitor = Monitor::find($request->id_monitor);
         if(!$monitor){
             return response()->json("No se encuentra ese monitor",404);
@@ -268,6 +269,7 @@ class MonitorController extends Controller
         //dd($sensoresTodos);
         $sendToMongoController = new SendToMongoDataController();
         $sendToMongoController->sendDatosMonitorToMongo(new Request([
+            'user_id'=>$user_id,
             'id_monitor' => $monitor->id,
             'sensor' => $sensoresTodos,
             'Fecha' => Carbon::now()->toDateTimeString(),

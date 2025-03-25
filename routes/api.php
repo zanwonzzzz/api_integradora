@@ -53,6 +53,17 @@ Route::group([
 Route::post('/verificar/{id}', [controlcontroller::class, 'CodigoVerificacion'])->name('verificar');
 Route::get('/activacion/{id}', [controlcontroller::class, 'VistaVerificacion'])->name('activacion')->middleware('signed');
 
+//Olvidar Contraseña
+Route::post('/forgot-password', [controlcontroller::class, 'OlvidarContraseña']);
+
+//VistaResetear Contraseña
+Route::get('/reset-password/{token}', function ($token) {
+    return view('ResetearContraseña', ['token' => $token]);
+})->name('password.reset')->middleware('signed');
+
+//RESETEAR CONTRASEÑA
+Route::post('/reset-password', [controlcontroller::class, 'ResetarContraseña'])->name('password.update');
+
 //SENSORES 
 Route::post('/sensor/agregar',[SensorController::class,'agregarsensor'])->middleware('auth.jwt');
 Route::get('/sensores',[SensorController::class,'obtenersensores'])->middleware('auth.jwt');
@@ -174,8 +185,10 @@ Route::get('/sensor-data/{id}', [SensorDataController::class, 'index'])->middlew
 Route::post('/sensor-data', [SensorDataController::class, 'store']);
 
 //DATOS DEL MONITOR A MONGO
-Route::post('/datos-mongo',[MonitorController::class,'MonitorAMongo']);
+Route::post('/datos-mongo',[MonitorController::class,'MonitorAMongo'])->middleware('auth.jwt');
 
+Route::post('/auditoria',[SendToMongoDataController::class,'Auditorias'])->middleware('auth.jwt');
+Route::get('/auditoria',[SendToMongoDataController::class,'ConsultaAuditorias'])->middleware('auth.jwt');
 
 
 //CONSULTAS DEL ADMIN
@@ -184,6 +197,8 @@ Route::get('/activos', [AdminController::class, 'UsuariosActivos'])->middleware(
 Route::get('/inactivos', [AdminController::class, 'UsuariosInactivos'])->middleware('auth.jwt');
 Route::get('/desactivar/{id}', [AdminController::class, 'DesactivarCuenta'])->middleware('auth.jwt');
 Route::get('/activar/{id}', [AdminController::class, 'ActivarCuenta'])->middleware('auth.jwt');
+
+Route::post('/data-sensor', [SensorDataController::class, 'obtenerDataSensor']);
 Route::get('/monitores/eliminados', [AdminController::class, 'MonitoresEliminados'])->middleware('auth.jwt');
 Route::get('/monitores/activos', [AdminController::class, 'MonitoresActivos'])->middleware('auth.jwt');
 Route::get('/monitores/menos/activos/', [AdminController::class, 'MonitoresMenosActivos'])->middleware('auth.jwt');
@@ -192,3 +207,4 @@ Route::get('/monitores/menos/activos/', [AdminController::class, 'MonitoresMenos
 Route::get('/promedio-mongo/{idmonitor}/{idsensor}/', [AdafruitController::class, 'PromedioPorDiaMongo'])->middleware('auth.jwt');
 Route::get('/promedio-hora/{idmonitor}/{idsensor}/{fechalimite}', [AdafruitController::class, 'PromedioPorHoraMongo'])->middleware('auth.jwt');
 
+Route::post('/prueba', [gaelcontroller::class, 'obtenerdatosporrequest']);
