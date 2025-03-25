@@ -14,6 +14,8 @@ use App\Http\Controllers\CronJobController;
 use App\Http\Controllers\SensorDataController;
 use App\Http\Controllers\SendToMongoDataController;
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\gaelcontroller;
+use App\Http\Controllers\BocinasController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -145,10 +147,16 @@ Route::get('/hora/{idsensor}/{fechalimite}', [AdafruitController::class, 'promed
 
 
 
-// Route::post('/prueba', [gaelcontroller::class, 'obtenerdatosporrequest']);
+Route::post('/prueba', [gaelcontroller::class, 'obtenerdatosporrequest']);
 
 
 
+//AQUI APLIQUE LOS CAMBIOS PARA LA BOCINA
+Route::prefix('bocina')->group(function () {
+    Route::get('/estado', [BocinasController::class, 'obtenerEstado']);
+    
+    Route::post('/estado', [BocinasController::class, 'cambiarEstado']);
+});
 
 
 
