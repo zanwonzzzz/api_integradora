@@ -1,5 +1,6 @@
 <?php
 
+use Aws\Middleware;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -199,9 +200,12 @@ Route::get('/desactivar/{id}', [AdminController::class, 'DesactivarCuenta'])->mi
 Route::get('/activar/{id}', [AdminController::class, 'ActivarCuenta'])->middleware('auth.jwt');
 
 Route::post('/data-sensor', [SensorDataController::class, 'obtenerDataSensor']);
-Route::get('/monitores/eliminados', [AdminController::class, 'MonitoresEliminados'])->middleware('auth.jwt');
+Route::get('/monitor/elimado', [AdminController::class, 'MonitoresEliminados'])->middleware('auth.jwt');
 Route::get('/monitores/activos', [AdminController::class, 'MonitoresActivos'])->middleware('auth.jwt');
 Route::get('/monitores/menos/activos/', [AdminController::class, 'MonitoresMenosActivos'])->middleware('auth.jwt');
+Route::get('/monitor/actividad',([AdminController::class,'MonitoresConMasActividad']))->middleware('auth.jwt');
+
+
 
 //REPORTES CON MONGO
 Route::get('/promedio-mongo/{idmonitor}/{idsensor}/', [AdafruitController::class, 'PromedioPorDiaMongo'])->middleware('auth.jwt');
