@@ -204,7 +204,7 @@ Route::get('/monitor/elimado', [AdminController::class, 'MonitoresEliminados'])-
 Route::get('/monitores/activos', [AdminController::class, 'MonitoresActivos'])->middleware('auth.jwt');
 Route::get('/monitores/menos/activos/', [AdminController::class, 'MonitoresMenosActivos'])->middleware('auth.jwt');
 Route::get('/monitor/actividad',([AdminController::class,'MonitoresConMasActividad']))->middleware('auth.jwt');
-
+Route::get('/monitor/promedio',([AdminController::class,'MonitoresConPromedio']))->middleware('auth.jwt');
 
 
 //REPORTES CON MONGO
