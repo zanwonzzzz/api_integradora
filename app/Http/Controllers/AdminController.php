@@ -81,11 +81,25 @@ class AdminController extends Controller
 
     // Historial de monitores: mostrar los monitores que han dado de baja los usuarios. (ultima semana)
     public function MonitoresEliminados()
-    {
-        $id = auth()->user()->id;
-        $monitoresBorrados = Monitor::onlyTrashed()->where('user_id', $id)->get();
-        return response()->json($monitoresBorrados,200);
+{
+    $fechaInicioSemana = now()->subWeek();
 
+    $monitoresEliminados = Monitor::onlyTrashed()
+        ->where('deleted_at', '>=', $fechaInicioSemana)
+        ->get();
+    
+    $monitoresFormateados = $monitoresEliminados->map(function ($monitor) {
+        $usuario = User::find($monitor->user_id);
+        $nombreUsuario = $usuario ? $usuario->name : 'Usuario no encontrado';
+        
+        $monitorData = $monitor->toArray();
+        
+        $monitorData['user_id'] = $nombreUsuario;
+        
+        return $monitorData;
+    });
+
+    return response()->json($monitoresFormateados, 200);
     }
 
     //Historial de monitores con más actividad semanal
@@ -101,4 +115,86 @@ class AdminController extends Controller
         $monitores = Monitor::where('Activo','<=',2)->get();
         return response()->json($monitores,200);
     }
+
+    public function MonitoresConMasActividad()
+    {
+        $fechaInicio = now()->subWeek();
+        $fechaFin = now();
+        
+        $monitores = Monitor::orderBy('Bocina', 'desc')->get();
+        
+        $monitoresFormateados = $monitores->map(function ($monitor) use ($fechaInicio, $fechaFin) {
+            $usuario = User::find($monitor->user_id);
+            $nombreUsuario = $usuario ? $usuario->name : 'Usuario no encontrado';
+            
+            $nivelActividad = 'Normal';
+            if ($monitor->Bocina >= 5) {
+                $nivelActividad = 'Precaución';
+            } elseif ($monitor->Bocina >= 10) {
+                $nivelActividad = 'Peligro';
+            }
+            
+            return [
+                'id' => $monitor->id,
+                'user_id' => $nombreUsuario,
+                'Nombre_Monitor' => $monitor->Nombre_Monitor,
+                'Ubicacion' => $monitor->Ubicacion,
+                'Activo' => $monitor->Bocina,
+                'clasificacion' => $nivelActividad,
+                'created_at' => $monitor->created_at,
+                'updated_at' => $monitor->updated_at,
+                'periodo_analisis' => [
+                    'desde' => $fechaInicio->format('Y-m-d'),
+                    'hasta' => $fechaFin->format('Y-m-d'),
+                ]
+            ];
+        });
+
+        return response()->json([
+            'total_monitores' => $monitoresFormateados->count(),
+            'periodo_analisis' => [
+                'desde' => $fechaInicio->format('Y-m-d'),
+                'hasta' => $fechaFin->format('Y-m-d'),
+            ],
+            'monitores' => $monitoresFormateados
+        ], 200);
+    }
+
+    public function MonitoresConPromedio()
+    {
+        $usuarios = User::all();
+        
+        $usuariosFormateados = [];
+        
+        foreach ($usuarios as $usuario) {
+            $monitores = Monitor::where('user_id', $usuario->id)->get();
+            
+            if ($monitores->count() > 0) {
+                $monitoresData = [];
+                
+                foreach ($monitores as $monitor) {
+                    $monitoresData[] = [
+                        'id' => $monitor->id,
+                        'nombre' => $monitor->Nombre_Monitor,
+                        'ubicacion' => $monitor->Ubicacion,
+                        'conteo_bocina' => $monitor->Bocina ?? 0
+                    ];
+                }
+                
+                $usuariosFormateados[] = [
+                    'id' => $usuario->id,
+                    'nombre' => $usuario->name,
+                    'email' => $usuario->email,
+                    'total_monitores' => $monitores->count(),
+                    'monitores' => $monitoresData
+                ];
+            }
+        }
+        
+        return response()->json([
+            'total_usuarios_con_monitores' => count($usuariosFormateados),
+            'usuarios' => $usuariosFormateados
+        ], 200);
+    }
+
 }
