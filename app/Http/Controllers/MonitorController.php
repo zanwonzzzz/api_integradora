@@ -125,13 +125,14 @@ class MonitorController extends Controller
     }
 
     //elegir sensores
-    public function elegir_sensores(int $idmonitor=0,int $idsensor=0){
+    public function elegir_sensores($idmonitor,$idsensor){
         
     
          
         $monitor = auth()->user()->monitor()->find($idmonitor); 
-        //$monitor = Monitor::find($idmonitor);
+        //dd($monitor);
         $sensor_id = Sensor::find($idsensor);
+        //dd($sensor_id);
        
         $monitor->sensores()->attach($sensor_id);
 
