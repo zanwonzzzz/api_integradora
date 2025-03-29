@@ -88,7 +88,7 @@ class User extends Authenticatable implements JWTSubject
             'email' => $this->email,
         ], false));
  */
-        $url= URL::temporarySignedRoute('password.reset', now()->addMinutes(3), ['token' => $token,
+        $url= URL::temporarySignedRoute('password.reset', now()->addMinutes(10), ['token' => $token,
             'email' => $this->email,]);
 
         $this->notify((new NotificacionReseteoContraseña($url)));

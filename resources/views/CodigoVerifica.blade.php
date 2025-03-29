@@ -6,6 +6,27 @@
     <title>Verificación de Código</title>
 </head>
 <body style="font-family: Arial, sans-serif; background-color: #f3f4f6; margin: 0; padding: 20px; color: #333;">
+        @if (session('success'))
+            <div class="alert alert-success">
+                {{ session('success') }}
+            </div>
+        @endif
+
+        @if (session('error'))
+            <div class="alert alert-danger">
+                {{ session('error') }}
+            </div>
+        @endif
+
+        @if ($errors->any())
+            <div class="alert alert-danger">
+                <ul>
+                    @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+        @endif
     <div style="max-width: 500px; margin: 50px auto; background-color: #ffffff; border-radius: 8px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); padding: 30px;">
         <h2 style="text-align: center; color: #84b6f4; margin-bottom: 20px;">Verificación de Cuenta</h2>
         <form method="POST" action="{{ route('verificar', ['id' => $id]) }}">
@@ -25,6 +46,11 @@
                 Verificar
             </button>
         </form>
+        @if(session('redirect_to'))
+        <script>
+                window.location.href = "{{ session('redirect_to') }}";
+         </script>
+        @endif
     </div>
 </body>
 </html>

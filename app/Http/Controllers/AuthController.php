@@ -44,37 +44,14 @@ class AuthController extends Controller
         
         
 
-        if ($user->cuenta_activa == 0 && $user->cuenta_activa_Admin == 0) {
+        if ($user->cuenta_activa == 0 || $user->cuenta_activa_Admin == 0) {
             return response()->json(['error' => 'Cuenta no activada.'], 403);
         } else {
-
-            if($user->monitor == 1){
-               
-                $ada = new AdafruitController();
-                $ada->SensorAda();
-            }
-           
            
             return response()->json([
                 'token' => $token
-               // 'oswi_token' => $atoken,
             ]);
         }
-    
-       /* $response = Http::withHeaders([])->post('http://192.168.253.29:9090/api/auth/login', [
-            'name' => $credentials['name'],
-            'email' => $credentials['email'],
-            'password' => $credentials['password'],
-        ]);
-    
-        $data = $response->json();
-        $atoken = $data['access_token'] ?? null;
-    
-        if (!$atoken) {
-            return response()->json(['error' => 'Token no recibido'], 500);
-        }*/
-    
-       // $id = auth()->user()->id; 
     
         DB::table('tabla_tokens')->updateOrInsert([
             'user_id' => $user->id,
@@ -157,11 +134,6 @@ class AuthController extends Controller
             ['password' => bcrypt($request->password)]
         ));
 
-         /* $response = Http::post('http://192.168.253.29:9090/api/auth/register', [
-            'name' => $credentials['name'],
-            'email' => $credentials['email'],
-            'password' => $credentials['password'],
-          ]);*/
 
         $codigo = mt_rand(100000, 999999);
         $url= URL::temporarySignedRoute('activacion', now()->addMinutes(5), ['id' => $user->id]);
@@ -228,7 +200,7 @@ class AuthController extends Controller
         ], 200);
     }
 
-    public function SalidaUsuario(){
+   /*  public function SalidaUsuario(){
 
         $key = config('services.adafruit.key');
 
@@ -238,5 +210,5 @@ class AuthController extends Controller
         ])->post("https://io.adafruit.com/api/v2/TomasilloV/feeds/sensores.bocina/data", [
             'value' => 'logout'
         ]);
-    }
+    } */
 }
