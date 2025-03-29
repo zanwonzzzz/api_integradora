@@ -44,6 +44,11 @@ class BocinasController extends Controller
                 'fecha_actualizacion' => now()->toDateTimeString()
             ]);
         } else {
+
+            $monitor = Bocina::find($request->id_monitor);
+            $monitor->Bocina++;
+            $monitor->save();
+
             $bocinaEstado = Bocina::create([
                 'Estado' => (int)$request->estado,
                 'id_monitor' => $request->id_monitor,
