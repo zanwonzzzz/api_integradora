@@ -13,15 +13,6 @@
             
             <input type="hidden" name="token" value="{{ $token ?? '' }}">
 
-            <label for="email" style="display: block; font-size: 16px; margin-bottom: 10px;">Correo electrónico:</label>
-            <input 
-                type="email" 
-                id="email" 
-                name="email" 
-                required 
-                style="width: 100%; padding: 10px; font-size: 16px; border: 1px solid #ccc; border-radius: 5px; margin-bottom: 20px;"
-            >
-
             <label for="password" style="display: block; font-size: 16px; margin-bottom: 10px;">Nueva contraseña:</label>
             <input 
                 type="password" 
@@ -47,6 +38,33 @@
                 Restablecer Contraseña
             </button>
         </form>
+        @if (session('success'))
+            <div class="alert alert-success">
+                {{ session('success') }}
+            </div>
+        @endif
+
+        @if (session('error'))
+            <div class="alert alert-danger">
+                {{ session('error') }}
+            </div>
+        @endif
+
+        @if ($errors->any())
+            <div class="alert alert-danger">
+                <ul>
+                    @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+        @endif
+
+        @if(session('redirect_to'))
+        <script>
+                window.location.href = "{{ session('redirect_to') }}";
+         </script>
+        @endif
     </div>
 </body>
 </html>

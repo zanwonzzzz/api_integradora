@@ -27,12 +27,25 @@ class controlcontroller extends Controller
     //verificar codigo
     public function CodigoVerificacion(Request $request,$id)
     {
-        $validator = Validator::make($request->all(), [
+        /* $validator = Validator::make($request->all(), [
             'codigo' => 'required|integer',
             
-        ]);
+        ]); */
+            $rules = [
+                'codigo' => 'required|numeric|digits:6',
+            ];
+   
+           $messages = [
+               'codigo.required' => 'El campo codigo es obligatorio.',
+               'codigo.numeric' => 'El campo codigo debe ser de tipo numerico.',
+               'codigo.digits' => 'El campo codigo es de solo 6 digitos.'
+           ];
+           
+       
+        $validator = Validator::make($request->all(), $rules, $messages);
         if($validator->fails()){
-            return response()->json($validator->errors(),400);
+            //return response()->json($validator->errors(),400);
+            return redirect()->back()->withErrors($validator)->withInput();
         }
 
         $user = User::findorfail($id);
@@ -44,13 +57,19 @@ class controlcontroller extends Controller
                 $user->cuenta_activa_Admin = 1;
                 $user->save();
 
-                return response()->view('vistadecuentaactive',['user' => $user->name]);
+               // return response()->view('vistadecuentaactive',['user' => $user->name]);
+               return redirect()->back()->with('success', 'Código verificado correctamente. ✅')
+                                         ->with('redirect_to', route('Inicio'));
 
                
             }
+            else
+            {
+                return redirect()->back()->with('error', 'Código incorrecto. ❌');
+            }
         }
         else{
-            return response()->json("No encontrado");
+            return redirect()->back()->with('error', 'Usuario No encontrado. ❌');
         }
        
     }
@@ -62,12 +81,30 @@ class controlcontroller extends Controller
 
     public function reenvio(request $request){
 
-        $validator = Validator::make($request->all(), [
+       /*  $validator = Validator::make($request->all(), [
             'email' => 'required|string|email|max:100'
         ]);
         if($validator->fails()){
             return response()->json($validator->errors()->toJson(),422);
+        } */
+        if (!$request->hasValidSignature()) {
+            return response()->json(["error" => 'No puedes solicitar reenvio si tu link no ha expirado'],403);
         }
+
+        $rules = [
+            'email' => 'required|email',
+        ];
+
+        $messages = [
+            'email.required' => 'El campo email es obligatorio.',
+            'email.email' => 'El campo email debe ser de tipo email.',
+        ];
+        
+    
+        $validator = Validator::make($request->all(), $rules, $messages);
+        if($validator->fails()){
+            return response()->json($validator->errors(),422);
+        } 
 
         $email= $request->email;
         $user = User::where('email', $email)->firstOrFail();
@@ -87,7 +124,13 @@ class controlcontroller extends Controller
 
             return response()->json([
                 "msg" => "reenvio exitoso"
-            ]); 
+            ],200); 
+        }
+        else 
+        {
+            return response()->json([
+                "msg" => "Tu cuenta ya esta activada no puedes solicitar reenvio"
+            ],422); 
         }
    }
 
@@ -96,6 +139,12 @@ class controlcontroller extends Controller
    public function OlvidarContraseña(Request $request)
    {
         $request->validate(['email' => 'required|email']);
+        $user = User::where('email', $request->email)->first();
+        if (!$user) {
+            return response()->json([
+                'message' => 'No se ha encontrado un usuario con ese correo.',
+            ], 422);
+        }
     
         $status = Password::sendResetLink(
             $request->only('email')
@@ -108,20 +157,47 @@ class controlcontroller extends Controller
         } else {
             return response()->json([
                 'message' => 'No se pudo enviar el correo. Verifica el correo proporcionado.',
-            ], 400);
+            ], 422);
         }
    }
 
    public function ResetarContraseña(Request $request)
    {
-        $request->validate([
+       /*  $request->validate([
             'token' => 'required',
-            'email' => 'required|email',
             'password' => 'required|min:8|confirmed',
-        ]);
+        ]); */
+
+        $rules = [
+           'token' => 'required',
+            'password' => 'required|min:8|confirmed',
+        ];
+
+       $messages = [
+           'token.required' => 'El campo token es obligatorio.',
+           'password.required' => 'El campo contraseña es obligatorio.',
+           'password.min' => 'El campo contraseña es de minimo 8 caracteres.'
+       ];
+       
+   
+    $validator = Validator::make($request->all(), $rules, $messages);
+    if($validator->fails()){
+        //return response()->json($validator->errors(),400);
+        return redirect()->back()->withErrors($validator)->withInput();
+    }
+
+    $reset = DB::table('password_resets')
+    ->where('token', $request->token)
+    ->first();
+
+    if (!$reset) {
+        return redirect()->back()->withErrors(['token' => 'Token inválido o expirado.'])->withInput();
+    }
+
+    $request->merge(['email' => $reset->email]);
     
         $status = Password::reset(
-            $request->only('email', 'password', 'password_confirmation', 'token'),
+            $request->only('email','password', 'password_confirmation', 'token'),
             function ($user, $password) {
                 $user->forceFill([
                     'password' => Hash::make($password)
@@ -131,7 +207,10 @@ class controlcontroller extends Controller
             }
         );
 
-        return response()->view('ExitoContrasena');
+        DB::table('password_resets')->where('token', $request->token)->delete();
+
+        return redirect()->back()->with('success', 'Contraseña cambiada correctamente. ✅')
+                                         ->with('redirect_to', route('Inicio'));
 
    }
 

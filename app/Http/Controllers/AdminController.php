@@ -23,7 +23,7 @@ class AdminController extends Controller
             return response()->json(['msg' => 'No se puede desactivar a un admin'], 403);
         }
 
-        $user->cuenta_activa = false;
+        $user->cuenta_activa_admin = false;
         $user->save();
 
         return response()->json(['message' => 'EL admin ha desactivado la Cuenta del usuario '.$user->name],200);
@@ -42,7 +42,7 @@ class AdminController extends Controller
             return response()->json(['msg' => 'No se puede activar a un admin'], 403);
         }
 
-        $user->cuenta_activa = true;
+        $user->cuenta_activa_admin = true;
         $user->save();
 
         return response()->json(['message' => 'EL admin ha activado la Cuenta del usuario '.$user->name],200);
@@ -75,7 +75,7 @@ class AdminController extends Controller
 
     public function UsuariosInactivos()
     {
-        $usuarios = User::where('cuenta_activa', 1)->get();
+        $usuarios = User::where('cuenta_activa', 0)->get();
         return response()->json($usuarios, 200);
     }
 
