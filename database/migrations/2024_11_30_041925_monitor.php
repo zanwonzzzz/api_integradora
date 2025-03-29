@@ -19,6 +19,7 @@ return new class extends Migration
             $table->string('Nombre_Monitor');
             $table->string('Ubicacion');
             $table->integer('Activo')->default(0);
+            $table->integer('Bocina')->default(0);
             $table->softDeletes();
             $table->timestamps();
 
