@@ -240,6 +240,7 @@ class MonitorController extends Controller
         $monitor = Monitor::find($idmonitor);
         $monitorsensor = MonitorSensor::where('monitor_id', $monitor->id)->pluck('sensor_id');
         $sensores = Sensor::whereIn('id', $monitorsensor)->get();
+        //dd($sensores);
             
         
         
