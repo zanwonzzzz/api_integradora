@@ -10,6 +10,7 @@ use App\Mail\Gmail;
 use Tymon\JWTAuth\Facades\JWTAuth;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
 use App\Http\Controllers\AdafruitController;
 use Illuminate\Support\Facades\Http;
 use App\Http\Controllers\SendToMongoDataController;
