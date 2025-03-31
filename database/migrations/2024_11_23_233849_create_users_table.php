@@ -23,9 +23,9 @@ return new class extends Migration
             $table->boolean('cuenta_activa')->default(false);
             $table->boolean('cuenta_activa_Admin')->nullable();
             $table->integer('codigo')->nullable();
+            $table->datetime('codigo_created_at')->nullable();
             $table->text('fotoperfil')->nullable();
             $table->string('mime_type')->nullable();
-            $table->boolean('monitor')->default(false)->nullable();
             $table->timestamp('email_verified_at')->nullable();
             $table->rememberToken();
             $table->softDeletes();

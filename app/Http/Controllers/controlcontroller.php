@@ -87,10 +87,6 @@ class controlcontroller extends Controller
         if($validator->fails()){
             return response()->json($validator->errors()->toJson(),422);
         } */
-        if (!$request->hasValidSignature()) {
-            return response()->json(["error" => 'No puedes solicitar reenvio si tu link no ha expirado'],403);
-        }
-
         $rules = [
             'email' => 'required|email',
         ];
@@ -108,6 +104,17 @@ class controlcontroller extends Controller
 
         $email= $request->email;
         $user = User::where('email', $email)->firstOrFail();
+        if(!$user)
+        {
+            return response()->json([
+                "msg" => "Usuario no encontrado"
+            ],404); 
+        }
+        if ($user->codigo_created_at && $user->codigo_created_at->addMinutes(5)->isFuture()) {
+            return response()->json([
+                "error" => 'Debes esperar a que expire el código actual (5 minutos) antes de solicitar otro'
+            ], 403);
+        }
 
         if($user->cuenta_activa == 0 && $user->cuenta_activa_Admin == 0)
         {
@@ -118,7 +125,8 @@ class controlcontroller extends Controller
             DB::table('users')->updateOrInsert(
                 ['id' => $user->id],
                 [
-                    'codigo' => $codigo
+                    'codigo' => $codigo,
+                    'codigo_created_at' => now()
                 ]
             );
 

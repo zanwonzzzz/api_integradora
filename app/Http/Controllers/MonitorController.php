@@ -249,12 +249,12 @@ class MonitorController extends Controller
     }
 
 
-    public function MonitorAMongo(request $request)
+    public function MonitorAMongo(int $id = 0)
     {
 
         $sensoresTodos = [];
         $user_id = auth()->user()->id;
-        $monitor = Monitor::find($request->id_monitor);
+        $monitor = Monitor::find($id);
         if(!$monitor){
             return response()->json("No se encuentra ese monitor",404);
         }

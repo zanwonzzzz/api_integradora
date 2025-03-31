@@ -34,9 +34,10 @@ class User extends Authenticatable implements JWTSubject
         'rol_id',
         'cuenta_activa',
         'cuenta_activa_Admin',
+        'codigo',
+        'codigo_created_at',
         'fotoperfil',
         'mime_type',
-        'monitor',
         
     ];
 
@@ -57,6 +58,7 @@ class User extends Authenticatable implements JWTSubject
      */
     protected $casts = [
         'email_verified_at' => 'datetime',
+        'codigo_created_at' => 'datetime'
     ];
     public function getJWTIdentifier() //este metodo indica que atributo del modelo debe usarse como el identificador del usuario dentro del token  jwt
     {
