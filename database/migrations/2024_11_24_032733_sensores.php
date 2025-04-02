@@ -17,16 +17,17 @@ return new class extends Migration
         Schema::create('sensores', function (Blueprint $table) {
             $table->id();
             $table->string('Nombre_Sensor');
+            $table->string('Identificador');
             $table->softDeletes();
             $table->timestamps();
         });
 
         DB::table('sensores')->insert([
-            ['Nombre_Sensor' => 'gas'],
-            ['Nombre_Sensor' => 'temperatura'],
-            ['Nombre_Sensor' => 'movimiento'],
-            ['Nombre_Sensor' => 'sonido'],
-            ['Nombre_Sensor' => 'luz'],
+            ['Nombre_Sensor' => 'Temperatura','Identificador' => 'TEM'],
+            ['Nombre_Sensor' => 'Movimiento','Identificador' => 'PIR'],
+            ['Nombre_Sensor' => 'Sonido','Identificador' => 'SON'],
+            ['Nombre_Sensor' => 'Gas','Identificador' => 'GAS'],
+            ['Nombre_Sensor' => 'Luz','Identificador' => 'LUZ'],
         ]);
     }
 

@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\Hash;
 use App\Http\Controllers\AdafruitController;
 use Illuminate\Support\Facades\Http;
 use App\Http\Controllers\SendToMongoDataController;
+use App\Http\Controllers\MonitorController;
 
 class AuthController extends Controller
 {
@@ -42,6 +43,15 @@ class AuthController extends Controller
         }
 
         $user = auth()->user();
+
+        $monitorMongo = new MonitorController();
+        $monitorMongo->monitorUsuarioMongo();
+    
+        DB::table('tabla_tokens')->updateOrInsert([
+            'user_id' => $user->id,
+            'token' => $token
+        ]);
+    
         
         
 
@@ -53,12 +63,8 @@ class AuthController extends Controller
                 'token' => $token
             ]);
         }
-    
-        DB::table('tabla_tokens')->updateOrInsert([
-            'user_id' => $user->id,
-            'token' => $token
-        ]);
-    
+
+       
        /* return response()->json([
             'laravel_token' => $token,
             //'adonis_token' => $atoken,

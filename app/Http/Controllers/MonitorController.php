@@ -35,9 +35,7 @@ class MonitorController extends Controller
         $monitor->Ubicacion = $request->ubicacion;
         $monitor->save();
 
-        $user = User::find($id);
-        $user->monitor = 1;
-        $user->save();
+
 
         $sendToMongoController = new SendToMongoDataController();
         $sendToMongoController->sendMonitorToMongo(new Request([
@@ -61,6 +59,7 @@ class MonitorController extends Controller
         $monitores = Monitor::where('user_id', $id)->get();
         return response()->json($monitores, 200);
     }
+
 
     //buscar por id monitor
     public function monitorPorId(int $idmonitor = 0){
@@ -91,6 +90,9 @@ class MonitorController extends Controller
         $monitor->Ubicacion = $request->ubicacion;
         $monitor->save();
 
+        $monitorMongo = new MonitorController();
+        $monitorMongo->monitorUsuarioMongo();
+
         return response()->json("Monitor Actualizado",200);
 
 
@@ -103,8 +105,12 @@ class MonitorController extends Controller
             $monitor = Monitor::find($id);
             
             if ($monitor) {
+
+               
                 
                 $monitor->delete();
+                $monitorMongo = new MonitorController();
+                $monitorMongo->monitorUsuarioMongo();
                     return response()->json([
                         "msg" => "Monitor eliminado",
                         "data" => [
@@ -138,6 +144,9 @@ class MonitorController extends Controller
 
         //$ada = new AdafruitController();
         //$ada->SensorAda();
+        
+        $monitorMongo = new MonitorController();
+        $monitorMongo->monitorUsuarioMongo();
 
         $sendToMongoController = new SendToMongoDataController();
         $sendToMongoController->sendMonitorSensorToMongo(new Request([
@@ -232,7 +241,8 @@ class MonitorController extends Controller
         
     } 
 
-    //obtener sensores de un monitor
+ 
+
     public function SensoresMonitor(int $idmonitor=0){
        
         
@@ -283,5 +293,72 @@ class MonitorController extends Controller
 
     }
 
+
+    //mandar info del monitor a mongo
+    
+    public function monitorUsuarioMongo()
+    {
+        $id = auth()->user()->id;
+        $monitores = Monitor::where('user_id', $id)->get();
+        
+        $monitoresSensores = [];
+        
+        $sendToMongoController = new SendToMongoDataController();
+        
+        foreach($monitores as $monitor) {
+            $sensores = $this->sensoresDelMonitorUsuario($monitor->id); 
+            
+            
+            $monitoresSensores[] = [
+                'id_monitor' => $monitor->id,
+                'sensor' => $sensores,
+                'Fecha' => now()->toDateTimeString()
+            ];
+        }
+        
+        
+        $result = $sendToMongoController->sendMonitorUsuario(new Request([
+            'user_id' => $id, 
+            'monitors' => $monitoresSensores
+        ]));
+        
+        return response()->json("Datos actualizados en MongoDB");
+    }
+
+    public function sensoresDelMonitorUsuario(int $id = 0)
+    {
+
+        $sensoresTodos = [];
+        $user_id = auth()->user()->id;
+        $monitor = Monitor::find($id);
+        if(!$monitor){
+            return response()->json("No se encuentra ese monitor",404);
+        }
+        
+        $sensores = new MonitorController();
+        $sensoresMonitor = $sensores->SensoresMonitor($monitor->id)->getData();
+        //dd($sensoresMonitor);
+        foreach($sensoresMonitor as $data)
+        {
+           $sensoresTodos[] = $data->id;
+        }
+        //dd($sensoresTodos);
+       /*  $sendToMongoController = new SendToMongoDataController();
+        return $sendToMongoController->sendDatosMonitorToMongo(new Request([
+            'id_monitor' => $monitor->id,
+            'sensor' => $sensoresTodos,
+            'Fecha' => Carbon::now()->toDateTimeString(),
+        ])); */
+
+        return $sensoresTodos;
+        
+
+
+    
+
+    }
+
+
+    
     
 }

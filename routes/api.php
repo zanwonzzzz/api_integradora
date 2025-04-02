@@ -212,3 +212,9 @@ Route::get('/promedio-mongo/{idmonitor}/{idsensor}/', [AdafruitController::class
 Route::get('/promedio-hora/{idmonitor}/{idsensor}/{fechalimite}', [AdafruitController::class, 'PromedioPorHoraMongo'])->middleware('auth.jwt');
 
 Route::post('/prueba', [gaelcontroller::class, 'obtenerdatosporrequest']);
+
+
+
+//DATTOS DE TODOS LOS MONITORES DEL USUARIO A MONGO
+Route::get('/mongo',[MonitorController::class,'monitorUsuarioMongo'])->middleware('auth.jwt');
+Route::get('/mongo/{id}',[MonitorController::class,'sensoresDelMonitorUsuario'])->middleware('auth.jwt');
