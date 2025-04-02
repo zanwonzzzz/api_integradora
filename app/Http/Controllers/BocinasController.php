@@ -6,6 +6,7 @@ use App\Models\Bocina;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use App\Models\Monitor;
+use App\Events\BocinaMostrar;
 
 class BocinasController extends Controller
 {
@@ -29,15 +30,9 @@ class BocinasController extends Controller
 
     public function cambiarEstado(Request $request)
     {
-        $validator = Validator::make($request->all(), [
-            'estado' => 'required|integer|in:0,1',
-            //'id_monitor' => 'required|string',
-            //'id_user' => 'required|string'
-        ]);
-
-        if($validator->fails()){
-            return response()->json($validator->errors()->toJson(), 422);
-        }
+        
+        
+        event(new BocinaMostrar($request->estado));
 
         if($request->estado == 0){
             $bocinaEstado = Bocina::create([
@@ -49,6 +44,8 @@ class BocinasController extends Controller
             $monitor = Monitor::find($request->id_monitor);
             $monitor->Bocina++;
             $monitor->save();
+            
+           
 
             $bocinaEstado = Bocina::create([
                 'Estado' => (int)$request->estado,
@@ -56,6 +53,7 @@ class BocinasController extends Controller
                 'id_user' => $request->id_user,
                 'fecha_actualizacion' => now()->toDateTimeString()
             ]);
+
         }
         
         return response()->json([
