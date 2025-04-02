@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Bocina;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use App\Models\Monitor;
 
 class BocinasController extends Controller
 {
@@ -45,7 +46,7 @@ class BocinasController extends Controller
             ]);
         } else {
 
-            $monitor = Bocina::find($request->id_monitor);
+            $monitor = Monitor::find($request->id_monitor);
             $monitor->Bocina++;
             $monitor->save();
 
