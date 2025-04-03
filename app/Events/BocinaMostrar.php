@@ -16,14 +16,17 @@ class BocinaMostrar implements ShouldBroadcastNow
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
     public $estado;
+    public $id_monitor;
+    public $id_user;
     /**
      * Create a new event instance.
      *
      * @return void
      */
-    public function __construct($estado)
+    public function __construct($estado,$id_monitor=null,$id_user=null)
     {
         $this->estado=$estado;
+        //dd($this->estado,$this->id_monitor,$this->id_user);
     }
 
     /**

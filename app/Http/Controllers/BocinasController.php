@@ -33,13 +33,14 @@ class BocinasController extends Controller
         
         
         event(new BocinaMostrar($request->estado));
-
         if($request->estado == 0){
+
             $bocinaEstado = Bocina::create([
                 'Estado' => (int)$request->estado,
                 'fecha_actualizacion' => now()->toDateTimeString()
             ]);
         } else {
+            
 
             $monitor = Monitor::find($request->id_monitor);
             $monitor->Bocina++;
