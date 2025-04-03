@@ -49,6 +49,9 @@ class gaelcontroller extends Controller
         else {
             $data = $request->all();
             $sensorData = SensorData::create($data);
+
+            event(new SensorDataEvent($data));
+
             
             return response()->json([
                 'success' => true,
@@ -58,35 +61,35 @@ class gaelcontroller extends Controller
         }
     }
 
-    public function obtener_ultimo_valor(Request $request)
-    {
-        $id_monitor = $request->id_monitor;
-        
-        $last_data = SensorData::where('id_monitor', $id_monitor)
-                        ->orderBy('Fecha', 'desc')
-                        ->first();
-        
-        if (!$last_data) {
-            return response()->json(null, 404);
-        }
-        
-        $docArray = is_array($last_data) ? $last_data : $last_data->toArray();
-        
-        $resultado = [];
-        
-        $prefijos = ['TEM', 'PIR', 'SON', 'GAS', 'LUZ'];
-        
-        foreach ($prefijos as $prefijo) {
-            foreach ($docArray as $key => $value) {
-                if (is_string($key) && strpos($key, $prefijo) === 0) {
-                    $resultado[] = $prefijo . ":" . $value;
-                    break;
-                }
+public function obtener_ultimo_valor(Request $request)
+{
+    $id_monitor = $request->id_monitor;
+    
+    $last_data = SensorData::where('id_monitor', $id_monitor)
+                      ->orderBy('Fecha', 'desc')
+                      ->first();
+    
+    if (!$last_data) {
+        return response()->json(null, 404);
+    }
+    
+    $docArray = is_array($last_data) ? $last_data : $last_data->toArray();
+    
+    $resultado = [];
+    
+    $prefijos = ['TEM', 'PIR', 'SON', 'GAS', 'LUZ'];
+    
+    foreach ($prefijos as $prefijo) {
+        foreach ($docArray as $key => $value) {
+            if (is_string($key) && strpos($key, $prefijo) === 0) {
+                $resultado[] = $prefijo . ":" . $value;
+                break;
             }
         }
-        
-        $respuesta = implode(',', $resultado);
-        
-        return response()->json($respuesta);
     }
+    
+    $respuesta = implode(',', $resultado);
+    
+    return response()->json($respuesta);
+}
 }
