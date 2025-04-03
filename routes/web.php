@@ -18,6 +18,10 @@ Route::get('/', function () {
     return view('welcome');
 });
 
+Route::get('/ExitoContrasena', function () {
+    return view('ExitoContrasena');
+})->name('exito');
+
 //ruta del login de angular
 Route::get('/log', function () {
     return redirect('http://localhost:4200/login');

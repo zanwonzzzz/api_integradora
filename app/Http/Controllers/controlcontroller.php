@@ -171,54 +171,36 @@ class controlcontroller extends Controller
 
    public function ResetarContraseña(Request $request)
    {
-       /*  $request->validate([
-            'token' => 'required',
-            'password' => 'required|min:8|confirmed',
-        ]); */
+    $request->validate([
+        'token' => 'required',
+        'email' => 'required|email',
+        'password' => 'required|min:8|confirmed',
+    ]);
 
-        $rules = [
-           'token' => 'required',
-            'password' => 'required|min:8|confirmed',
-        ];
+    $email = $request->input('email');
+    $user = User::where('email', $email)->first();
 
-       $messages = [
-           'token.required' => 'El campo token es obligatorio.',
-           'password.required' => 'El campo contraseña es obligatorio.',
-           'password.min' => 'El campo contraseña es de minimo 8 caracteres.'
-       ];
-       
-   
-    $validator = Validator::make($request->all(), $rules, $messages);
-    if($validator->fails()){
-        //return response()->json($validator->errors(),400);
-        return redirect()->back()->withErrors($validator)->withInput();
+    if (!$user) {
+        return response()->json([
+            'message' => 'No se encontró un usuario con este correo electrónico.',
+        ], 422);
     }
-
-    $reset = DB::table('password_resets')
-    ->where('token', $request->token)
-    ->first();
-
-    if (!$reset) {
-        return redirect()->back()->withErrors(['token' => 'Token inválido o expirado.'])->withInput();
-    }
-
-    $request->merge(['email' => $reset->email]);
-    
-        $status = Password::reset(
-            $request->only('email','password', 'password_confirmation', 'token'),
-            function ($user, $password) {
-                $user->forceFill([
-                    'password' => Hash::make($password)
-                ])->setRememberToken(Str::random(60));
-    
-                $user->save();
-            }
-        );
-
-        DB::table('password_resets')->where('token', $request->token)->delete();
-
-        return redirect()->back()->with('success', 'Contraseña cambiada correctamente. ✅')
-                                         ->with('redirect_to', route('Inicio'));
+ 
+    $status = Password::reset(
+        $request->only('email', 'password', 'password_confirmation', 'token'),
+        function ($user, $password) {
+            $user->forceFill([
+                'password' => Hash::make($password)
+            ])->setRememberToken(Str::random(60));
+ 
+            $user->save();
+        }
+    );
+ 
+    return response()->json([
+        'message' => "¡Contraseña cambiada exitosamente!",
+    ], 200);
+                              
 
    }
 
