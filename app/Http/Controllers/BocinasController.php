@@ -32,7 +32,8 @@ class BocinasController extends Controller
     {
         
         
-        event(new BocinaMostrar($request->estado));
+        event(new BocinaMostrar($request->estado,$request->id_monitor,$request->id_user));
+        
         if($request->estado == 0){
 
             $bocinaEstado = Bocina::create([

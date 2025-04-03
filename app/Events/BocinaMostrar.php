@@ -26,6 +26,8 @@ class BocinaMostrar implements ShouldBroadcastNow
     public function __construct($estado,$id_monitor=null,$id_user=null)
     {
         $this->estado=$estado;
+        $this->id_monitor=$id_monitor;
+        $this->id_user=$id_user;
         //dd($this->estado,$this->id_monitor,$this->id_user);
     }
 
