@@ -198,6 +198,8 @@ Route::post('/sensor-data', [SensorDataController::class, 'store']);
 
 Route::post('/data-sensor', [SensorDataController::class, 'obtenerDataSensor']);
 
+Route::post( '/ultimovalor', [gaelcontroller::class, 'obtener_ultimo_valor']);
+
 //AQUI APLIQUE LOS CAMBIOS PARA LA BOCINA
 Route::prefix('bocina')->group(function () {
     Route::get('/estado', [BocinasController::class, 'obtenerEstado']);
