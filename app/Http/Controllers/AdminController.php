@@ -24,6 +24,7 @@ class AdminController extends Controller
         }
 
         $user->cuenta_activa_admin = false;
+        $user->cuenta_activa = false;
         $user->save();
 
         return response()->json(['message' => 'EL admin ha desactivado la Cuenta del usuario '.$user->name],200);
