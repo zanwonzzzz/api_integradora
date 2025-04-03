@@ -155,6 +155,49 @@ class MonitorController extends Controller
         ]));
     }
 
+    public function elegirSensores(Request $request,$idmonitor){
+        
+    
+         
+        $monitor = auth()->user()->monitor()->find($idmonitor); 
+        if(!$monitor)
+        {
+            return response()->json("Monitor no Encontrado",404);
+        }
+        //dd($monitor);
+        $sensorIds = $request->input('sensores', []);
+
+        $sensores = Sensor::find($sensorIds);
+        //dd($sensores);
+
+        if($sensores)
+        {
+            foreach($sensorIds as $sensor_id)
+            {
+                
+                $monitor->sensores()->attach($sensor_id);
+            }
+            
+    
+            //$ada = new AdafruitController();
+            //$ada->SensorAda();
+            
+            $monitorMongo = new MonitorController();
+            $monitorMongo->monitorUsuarioMongo();
+    
+            $sendToMongoController = new SendToMongoDataController();
+            $sendToMongoController->sendMonitorSensorToMongo(new Request([
+                'monitor_id' => $monitor->id,
+                'sensor_id' => $sensores->pluck('id')
+            ])); 
+        }
+        else 
+        {
+            return response()->json("Sensores no encontrados",404);
+        }
+        
+    }
+
     
     //borrar sensores q eligio
    /*   public function eliminar_sensores(int $idmonitor=0){
