@@ -25,7 +25,7 @@ class Roles
             return response()->json(['error' => 'Usuario no autenticado'], 401);
         }
         if ($user->cuenta_activa==0 || $user->cuenta_activa_Admin == 0) {
-            return response()->json(['error' => 'Cuenta no activada.'], 403);
+            return response()->json(['error' => 'Tu cuenta ha sido desactivada por un administrador'], 403);
         }
 
         return $next($request);
