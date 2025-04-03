@@ -1157,10 +1157,10 @@ class AdafruitController extends Controller
     {
         
         $sensores = [
-            1 => "GAS".$idmonitor,
-            2 => "TEM".$idmonitor,
-            3 => "PIR".$idmonitor,
-            4 => "SON".$idmonitor,
+            1 => "TEM".$idmonitor,
+            2 => "PIR".$idmonitor,
+            3 => "SON".$idmonitor,
+            4 => "GAS".$idmonitor,
             5 => "LUZ".$idmonitor,
         ];
 
@@ -1288,10 +1288,11 @@ class AdafruitController extends Controller
     public function PromedioPorHoraMongo(int $idmonitor=0,int $idsensor=0,$fechalimite="")
     {
         $sensores = [
-            1 => "GAS".$idmonitor,
-            2 => "TEM".$idmonitor,
-            3 => "PIR".$idmonitor,
-            4 => "SON".$idmonitor,
+           
+            1 => "TEM".$idmonitor,
+            2 => "PIR".$idmonitor,
+            3 => "SON".$idmonitor,
+            4 => "GAS".$idmonitor,
             5 => "LUZ".$idmonitor,
         ];
 
@@ -1355,10 +1356,6 @@ class AdafruitController extends Controller
                 $promediosPorHora[$hora] = $cantidadValores > 0 ? round($totalValores / $cantidadValores, 2) : 0;
 
             }
-        }
-        else 
-        {
-          $datos = 0;
         }
 
         $resultados[] = [
