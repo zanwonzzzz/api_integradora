@@ -18,11 +18,13 @@ class Roles
     public function handle(Request $request, Closure $next)
     {
         $user = Auth::user();
+        //dd($user->cuenta_activa, $user->cuenta_activa_Admin);
+
 
         if (!$user) {
             return response()->json(['error' => 'Usuario no autenticado'], 401);
         }
-        if ($user->cuenta==0 || $user->cuentaAdmin == 0) {
+        if ($user->cuenta_activa==0 || $user->cuenta_activa_Admin == 0) {
             return response()->json(['error' => 'Cuenta no activada.'], 401);
         }
 

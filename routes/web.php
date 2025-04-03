@@ -28,8 +28,8 @@ Route::get('/activacion/{id}', [controlcontroller::class, 'VistaVerificacion'])-
 
 //CONTRASEÑA
 
-Route::get('/reset-password/{token}', function ($token) {
+/* Route::get('/reset-password/{token}', function ($token) {
     return view('ResetearContraseña', ['token' => $token]);
 })->name('password.reset');
 
-Route::post('/reset-password', [controlcontroller::class, 'ResetarContraseña'])->name('password.update');
+Route::post('/reset-password', [controlcontroller::class, 'ResetarContraseña'])->name('password.update'); */

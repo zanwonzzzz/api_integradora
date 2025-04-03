@@ -17,6 +17,7 @@ use App\Http\Controllers\SendToMongoDataController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\gaelcontroller;
 use App\Http\Controllers\BocinasController;
+use App\Http\Middleware\Roles;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -58,12 +59,21 @@ Route::get('/activacion/{id}', [controlcontroller::class, 'VistaVerificacion'])-
 Route::post('/forgot-password', [controlcontroller::class, 'OlvidarContraseña']);
 
 //VistaResetear Contraseña
-/* Route::get('/reset-password/{token}', function ($token) {
+Route::get('/reset-password/{token}', function ($token) {
     return view('ResetearContraseña', ['token' => $token]);
 })->name('password.reset')->middleware('signed'); 
 
+
 //RESETEAR CONTRASEÑA
-Route::post('/reset-password', [controlcontroller::class, 'ResetarContraseña'])->name('password.update'); */
+Route::post('/reset-password', [controlcontroller::class, 'ResetarContraseña'])->name('password.update');
+
+//REENVIO DE ACTIVACION DE LA CUENTA
+Route::post('reenvio/', [controlcontroller::class, 'reenvio'])->name('reenvio');
+
+
+Route::group([
+    'middleware' => ['auth.jwt','roles']
+], function ($router) {
 
 //SENSORES 
 Route::post('/sensor/agregar',[SensorController::class,'agregarsensor'])->middleware('auth.jwt');
@@ -84,9 +94,6 @@ Route::get('/sensores/{id}',[MonitorController::class,'SensoresMonitor'])->middl
 
 //MANDAR SENSORES QUE ELGIO A ADAFRUIT
 Route::get('/sensor/ada',[AdafruitController::class,'SensorAda'])->middleware('auth.jwt');//DUDA
-
-//REENVIO DE ACTIVACION DE LA CUENTA
-Route::post('reenvio/', [controlcontroller::class, 'reenvio'])->name('reenvio');
 
 //REESTABLECIMIENTO DE CONTRASEÑA
 
@@ -144,35 +151,6 @@ Route::get('/promedio/{idsensor}', [AdafruitController::class, 'Promediobd'])->m
 //PROMEDIOS POR HORA PERO CON DATOS EN LA BD
 Route::get('/hora/{idsensor}/{fechalimite}', [AdafruitController::class, 'promediobdporhora'])->middleware('auth.jwt');
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-Route::post('/prueba', [gaelcontroller::class, 'obtenerdatosporrequest']);
-
-
-
-//AQUI APLIQUE LOS CAMBIOS PARA LA BOCINA
-Route::prefix('bocina')->group(function () {
-    Route::get('/estado', [BocinasController::class, 'obtenerEstado']);
-    
-    Route::post('/estado', [BocinasController::class, 'cambiarEstado']);
-});
-
-
-
-
 //PROBAR CRONJOBS
 Route::get('/cronjobs', [CronJobController::class, 'CronJobParaGuardarDatos'])->middleware('auth.jwt');
 Route::get('/cronjobs2', [CronJobController::class, 'CronJobParaDatosNuevos'])->middleware('auth.jwt');
@@ -183,7 +161,6 @@ Route::get('/sensorsitos/{id}',[AdafruitController::class,'BorrarSensores'])->mi
 
 //DATA SENSORES 
 Route::get('/sensor-data/{id}', [SensorDataController::class, 'index'])->middleware('auth.jwt');
-Route::post('/sensor-data', [SensorDataController::class, 'store']);
 
 //DATOS DEL MONITOR A MONGO
 Route::get('/datos-mongo/{id}',[MonitorController::class,'MonitorAMongo'])->middleware('auth.jwt');
@@ -199,22 +176,31 @@ Route::get('/inactivos', [AdminController::class, 'UsuariosInactivos'])->middlew
 Route::get('/desactivar/{id}', [AdminController::class, 'DesactivarCuenta'])->middleware('auth.jwt');
 Route::get('/activar/{id}', [AdminController::class, 'ActivarCuenta'])->middleware('auth.jwt');
 
-Route::post('/data-sensor', [SensorDataController::class, 'obtenerDataSensor']);
 Route::get('/monitor/elimado', [AdminController::class, 'MonitoresEliminados'])->middleware('auth.jwt');
 Route::get('/monitores/activos', [AdminController::class, 'MonitoresActivos'])->middleware('auth.jwt');
 Route::get('/monitores/menos/activos/', [AdminController::class, 'MonitoresMenosActivos'])->middleware('auth.jwt');
 Route::get('/monitor/actividad',([AdminController::class,'MonitoresConMasActividad']))->middleware('auth.jwt');
 Route::get('/monitor/promedio',([AdminController::class,'MonitoresConPromedio']))->middleware('auth.jwt');
 
-
 //REPORTES CON MONGO
 Route::get('/promedio-mongo/{idmonitor}/{idsensor}/', [AdafruitController::class, 'PromedioPorDiaMongo'])->middleware('auth.jwt');
 Route::get('/promedio-hora/{idmonitor}/{idsensor}/{fechalimite}', [AdafruitController::class, 'PromedioPorHoraMongo'])->middleware('auth.jwt');
 
-Route::post('/prueba', [gaelcontroller::class, 'obtenerdatosporrequest']);
-
-
-
 //DATTOS DE TODOS LOS MONITORES DEL USUARIO A MONGO
 Route::get('/mongo',[MonitorController::class,'monitorUsuarioMongo'])->middleware('auth.jwt');
 Route::get('/mongo/{id}',[MonitorController::class,'sensoresDelMonitorUsuario'])->middleware('auth.jwt');
+});
+
+
+Route::post('/prueba', [gaelcontroller::class, 'obtenerdatosporrequest']);
+
+Route::post('/sensor-data', [SensorDataController::class, 'store']);
+
+Route::post('/data-sensor', [SensorDataController::class, 'obtenerDataSensor']);
+
+//AQUI APLIQUE LOS CAMBIOS PARA LA BOCINA
+Route::prefix('bocina')->group(function () {
+    Route::get('/estado', [BocinasController::class, 'obtenerEstado']);
+    
+    Route::post('/estado', [BocinasController::class, 'cambiarEstado']);
+});
