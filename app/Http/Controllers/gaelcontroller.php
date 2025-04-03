@@ -52,7 +52,6 @@ class gaelcontroller extends Controller
 
             event(new SensorDataEvent($data));
 
-            
             return response()->json([
                 'success' => true,
                 'message' => 'Datos guardados correctamente',
