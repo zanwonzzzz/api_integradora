@@ -56,7 +56,7 @@ class AuthController extends Controller
         
 
         if ($user->cuenta_activa == 0 || $user->cuenta_activa_Admin == 0) {
-            return response()->json(['error' => 'Cuenta no activada.'], 401);
+            return response()->json(['error' => 'Cuenta no activada.'], 403);
         } else {
            
             return response()->json([
