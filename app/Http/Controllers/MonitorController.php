@@ -90,8 +90,8 @@ class MonitorController extends Controller
         $monitor->Ubicacion = $request->ubicacion;
         $monitor->save();
 
-        $monitorMongo = new MonitorController();
-        $monitorMongo->monitorUsuarioMongo();
+        /* $monitorMongo = new MonitorController();
+        $monitorMongo->monitorUsuarioMongo(); */
 
         return response()->json("Monitor Actualizado",200);
 
