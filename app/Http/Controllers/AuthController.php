@@ -37,7 +37,7 @@ class AuthController extends Controller
     public function login()
     {
         $credentials = request(['email', 'password']);
-    
+
         if (!$token = auth()->attempt($credentials)) {
             return response()->json(['error' => 'Unauthorized'], 401);
         }
@@ -46,29 +46,23 @@ class AuthController extends Controller
 
         $monitorMongo = new MonitorController();
         $monitorMongo->monitorUsuarioMongo();
-    
+
         DB::table('tabla_tokens')->updateOrInsert([
             'user_id' => $user->id,
             'token' => $token
         ]);
-    
-        
-        
 
-        if ($user->cuenta_activa == 0 || $user->cuenta_activa_Admin == 0) {
-            return response()->json(['error' => 'Cuenta no activada.'], 401);
-        } else {
-           
-            return response()->json([
-                'token' => $token
-            ]);
+        if ($user->cuenta_activa_Admin == 0) {
+            return response()->json(['error' => 'Cuenta desactivada por un administrador.'], 403);
         }
 
-       
-       /* return response()->json([
-            'laravel_token' => $token,
-            //'adonis_token' => $atoken,
-        ]);*/
+        if ($user->cuenta_activa == 0) {
+            return response()->json(['error' => 'Cuenta no activada.'], 403);
+        }
+
+        return response()->json([
+            'token' => $token
+        ]);
     }
     /**
      * Get the authenticated User.

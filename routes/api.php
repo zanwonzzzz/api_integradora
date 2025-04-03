@@ -88,7 +88,7 @@ Route::delete('/monitor/{id}',[MonitorController::class,'borrarmonitor'])->middl
 Route::put('/monitor/{idmonitor}',[MonitorController::class,'actualizarmonitor'])->middleware('auth.jwt');
 //MONITORES Y SUS SENSORES
 
-Route::get('/sensor/{idmonitor}/{id}',[MonitorController::class,'elegir_sensores'])->middleware('auth.jwt'); //EN REPARACION
+Route::post('/sensor/{idmonitor}',[MonitorController::class,'elegirSensores'])->middleware('auth.jwt'); //EN REPARACION
 Route::delete('/sensores/{idmonitor}/{idsensor}',[MonitorController::class,'eliminar_sensores'])->middleware('auth.jwt');
 Route::get('/sensores/{id}',[MonitorController::class,'SensoresMonitor'])->middleware('auth.jwt');
 
