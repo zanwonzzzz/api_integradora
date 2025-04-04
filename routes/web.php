@@ -24,7 +24,7 @@ Route::get('/ExitoContrasena', function () {
 
 //ruta del login de angular
 Route::get('/log', function () {
-    return redirect('http://localhost:4200/login');
+    return redirect('https://babysave.online/login');
 })->name('Inicio');
 
 Route::post('/verificar/{id}', [controlcontroller::class, 'CodigoVerificacion'])->name('verificar');
