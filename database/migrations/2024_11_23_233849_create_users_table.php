@@ -42,6 +42,7 @@ return new class extends Migration
             'rol_id' => 3,
             'cuenta_activa' => true,
             'cuenta_activa_Admin' => true,
+            'mime_type'=>"0"
         ]);
     }
 
