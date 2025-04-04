@@ -1287,6 +1287,13 @@ class AdafruitController extends Controller
     //PROMEDIO POR HORA EN MONGO
     public function PromedioPorHoraMongo(int $idmonitor=0,int $idsensor=0,$fechalimite="")
     {
+        $monitor = Monitor::find($idmonitor);
+        if(!$monitor)
+        {
+            return response()->json([
+                'msg' => "Monitor no encontrado"
+            ],404);
+        }
         $sensores = [
            
             1 => "TEM".$idmonitor,
