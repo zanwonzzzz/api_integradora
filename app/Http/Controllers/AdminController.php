@@ -44,6 +44,7 @@ class AdminController extends Controller
         }
 
         $user->cuenta_activa_admin = true;
+        $user->cuenta_activa = true;
         $user->save();
 
         return response()->json(['message' => 'EL admin ha activado la Cuenta del usuario '.$user->name],200);
