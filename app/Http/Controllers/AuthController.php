@@ -157,7 +157,8 @@ class AuthController extends Controller
             ['id' => $user->id],
             [
                 'codigo' => $codigo,
-                'codigo_created_at' => now()
+                'codigo_created_at' => now(),
+                'mime_type'=>"0"
             ]
         );
 
