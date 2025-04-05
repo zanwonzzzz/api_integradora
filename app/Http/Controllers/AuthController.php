@@ -182,8 +182,8 @@ class AuthController extends Controller
 
     public function ActualizarUsuario(Request $request) {
         $validator = Validator::make($request->all(), [
-            'name' => 'nullable|string|min:3|max:50', 
-            'password' => 'nullable|string|min:6'    
+            'name' => 'required|string|min:3|max:50', 
+            'password' => 'required|string|min:6'    
         ]);
     
         if ($validator->fails()) {
@@ -192,22 +192,11 @@ class AuthController extends Controller
     
         $user = auth()->user();
     
-        $isNameUnchanged = $request->name ? $request->name === $user->name : true;
-        $isPasswordUnchanged = $request->password ? Hash::check($request->password, $user->password) : true;
-    
-        if ($isNameUnchanged && $isPasswordUnchanged) {
-            return response()->json([
-                'msg' => 'No se ha realizado ningún cambio'
-            ], 422);
-        }
-    
-        if ($request->name && !$isNameUnchanged) {
+        if ($request->name && $request->name !== $user->name) {
             $user->name = $request->name;
         }
     
-        if ($request->password && !$isPasswordUnchanged) {
-            $user->password = bcrypt($request->password);
-        }
+        $user->password = bcrypt($request->password);
     
         $user->save();
     
