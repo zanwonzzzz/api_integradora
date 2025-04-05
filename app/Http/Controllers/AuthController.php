@@ -44,8 +44,15 @@ class AuthController extends Controller
 
         $user = auth()->user();
 
-        $monitorMongo = new MonitorController();
-        $monitorMongo->monitorUsuarioMongo();
+
+        if($user->mime_type == "1")
+        {
+            $monitorMongo = new MonitorController();
+            $monitorMongo->monitorUsuarioMongo();
+        }
+
+       
+       
     
         DB::table('tabla_tokens')->updateOrInsert([
             'user_id' => $user->id,
@@ -150,7 +157,8 @@ class AuthController extends Controller
             ['id' => $user->id],
             [
                 'codigo' => $codigo,
-                'codigo_created_at' => now()
+                'codigo_created_at' => now(),
+                'mime_type'=>"0"
             ]
         );
 

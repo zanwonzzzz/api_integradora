@@ -27,13 +27,18 @@ class MonitorController extends Controller
             return response()->json($validator->errors()->toJson(),422);
         }
 
-        $id = auth()->user()->id;
+        //$id = auth()->user()->id;
+        $usuario = auth()->user();
 
         $monitor = new Monitor();
-        $monitor->user_id = $id;
+        $monitor->user_id = $usuario->id;
         $monitor->Nombre_Monitor = $request->nombre;
         $monitor->Ubicacion = $request->ubicacion;
         $monitor->save();
+
+        $usuario->mime_type = "1";
+        $usuario->save();
+        
 
 
 
