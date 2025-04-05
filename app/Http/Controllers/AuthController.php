@@ -182,26 +182,36 @@ class AuthController extends Controller
 
     public function ActualizarUsuario(Request $request) {
         $validator = Validator::make($request->all(), [
-            'name' => 'required|string|min:3|max:50', 
-            'password' => 'required|string|min:6'    
+            'name' => 'sometimes|string|min:3|max:50', 
+            'password' => 'sometimes|string|min:6'     
         ]);
-    
+        
         if ($validator->fails()) {
             return response()->json($validator->errors(), 422);
         }
-    
+        
         $user = auth()->user();
-    
-        if ($request->name && $request->name !== $user->name) {
+        $updated = false;
+        
+        if ($request->has('name') && $request->name !== $user->name) {
             $user->name = $request->name;
+            $updated = true;
         }
-    
-        $user->password = bcrypt($request->password);
-    
-        $user->save();
-    
+        
+        if ($request->has('password')) {
+            $user->password = bcrypt($request->password);
+            $updated = true;
+        }
+        
+        if ($updated) {
+            $user->save();
+            return response()->json([
+                'msg' => 'Usuario actualizado correctamente'
+            ], 200);
+        }
+        
         return response()->json([
-            'msg' => 'Usuario actualizado correctamente'
+            'msg' => 'No hay cambios para actualizar'
         ], 200);
     }
 
@@ -216,4 +226,21 @@ class AuthController extends Controller
             'value' => 'logout'
         ]);
     } */
+
+    public function totalusuarios(){
+
+        $usuarios=  User::where('cuenta_activa')->count();
+
+        return response()->json([
+            'total_usuarios' => $usuarios
+        ], 200);
+    }
+
+    public function toatalmonitores(){
+
+        $monitores=  Monitor::all()->count();
+        return response()->json([
+            'total_monitores' => $monitores
+        ], 200);
+    }
 }

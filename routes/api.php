@@ -205,3 +205,8 @@ Route::prefix('bocina')->group(function () {
 });
 
 Route::post( '/ultimovalor', [gaelcontroller::class, 'obtener_ultimo_valor']);
+
+
+Route::get('total', [AuthController::class, 'totalusuarios']);
+
+Route::get('totalmonitores', [AuthController::class, 'totalmonitores']);
