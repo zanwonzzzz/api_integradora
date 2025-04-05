@@ -210,3 +210,5 @@ Route::post( '/ultimovalor', [gaelcontroller::class, 'obtener_ultimo_valor']);
 Route::get('total', [AuthController::class, 'totalusuarios']);
 
 Route::get('totalmonitores', [AuthController::class, 'totalmonitores']);
+
+Route::get('todomonitores', [AdminController::class, 'todosMonitores']);

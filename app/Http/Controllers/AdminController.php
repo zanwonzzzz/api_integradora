@@ -197,4 +197,10 @@ class AdminController extends Controller
         ], 200);
     }
 
+    public function todosMonitores()
+    {
+        $monitores = Monitor::all();
+        return response()->json($monitores,200);
+    }
+
 }

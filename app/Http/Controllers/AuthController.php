@@ -15,6 +15,7 @@ use App\Http\Controllers\AdafruitController;
 use Illuminate\Support\Facades\Http;
 use App\Http\Controllers\SendToMongoDataController;
 use App\Http\Controllers\MonitorController;
+use App\Models\Monitor;
 
 class AuthController extends Controller
 {
